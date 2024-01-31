@@ -41,4 +41,9 @@ class User extends \TCG\Voyager\Models\User
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+     // Relación uno a uno con la tabla 'infos'
+     public function info(){
+        return $this->hasOne(Info::class);
+    }
 }
