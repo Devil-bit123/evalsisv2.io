@@ -70,6 +70,20 @@ class User extends \TCG\Voyager\Models\User
         return $this->belongsToMany(Company::class, 'user_company', 'user_id', 'company_id');
     }
 
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user', 'user_id', 'course_id')
+            ->withPivot('role')
+            ->withTimestamps();
+    }
 
+    public function enrollInCourse(Course $course)
+    {
+        $this->courses()->attach($course->id, ['role' => 'alumno']);
+    }
 
+    public function teachCourse(Course $course)
+    {
+        $this->courses()->attach($course->id, ['role' => 'docente']);
+    }
 }

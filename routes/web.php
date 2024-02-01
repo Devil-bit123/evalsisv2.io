@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CourseUserController;
 use App\Http\Controllers\UserCompanyController;
 
 /*
@@ -36,7 +37,6 @@ Route::group(['prefix' => 'admin'], function () {
     ->name('remove.user.from.company');
 
     //Cursos
-
     Route::get('/index-course', [CourseController::class, 'index'])
     ->name('courses.index');
 
@@ -59,7 +59,15 @@ Route::group(['prefix' => 'admin'], function () {
     ->name('courses.details');
 
 
+    //
+    Route::get('/courses/{course}/add-teacher', [CourseUserController::class, 'showAddTeacherForm'])->name('courses.addTeacher');
+    Route::post('/courses/{course}/add-teacher', [CourseUserController::class, 'addTeacher'])->name('courses.storeTeacher');
+    Route::delete('/courses/{course}/remove-teacher/{teacher}', [CourseUserController::class, 'removeTeacher'])->name('courses.removeTeacher');
 
+    Route::get('/courses/{course}/add-student/{id}', [CourseUserController::class, 'addStudentForm'])->name('courses.addStudentForm');
+    Route::post('/courses/{course}/add-student/{id}', [CourseUserController::class, 'addStudent'])->name('courses.storeStudent');
+
+    Route::delete('/courses/{course}/remove-student/{student}', [CourseUserController::class, 'removeStudent'])->name('courses.removeStudent');
 
 
 

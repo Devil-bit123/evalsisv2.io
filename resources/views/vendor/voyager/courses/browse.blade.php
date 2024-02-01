@@ -8,6 +8,8 @@
     @if ($user->role->name == 'admin' || $user->role->name == 'docente')
     <a href="{{ route('courses.add') }}"
         class="btn btn-warning">Agregar</a>
+
+
 @endif
 
     <div class="container">
@@ -26,9 +28,22 @@
                                     class="btn btn-warning">Editar</a>
                             @endif
                             @if ($user->role->name == 'admin')
+                            <a href="{{ route('courses.addTeacher',['course' => $course->id]) }}"
+                            class="btn btn-warning">Agregar Maestro</a>
+
                                 <a href="{{ route('courses.delete', ['id' => $course->id]) }}"
                                     class="btn btn-danger">Eliminar</a>
                             @endif
+
+                            @if ($user->role->name == 'alumno')
+                            <a href="#" class="btn btn-danger matricularse-btn"
+                            data-course-id="{{ $course->id }}"
+                            data-user-id="{{ $user->id }}">Matricularse</a>
+
+
+
+                            @endif
+
                         </div>
                     </div>
                 </div>
@@ -81,22 +96,14 @@
                 }
             });
 
-
             $('.btn-add').click(function(e) {
                 e.preventDefault();
 
                 var courseId = $(this).data('course-id');
 
-                if (confirm('¿Estás seguro de que deseas eliminar este curso?')) {
-                    // Aquí puedes realizar una solicitud Ajax para enviar la solicitud de eliminación al servidor.
-                    // Puedes usar la ruta '/delete-course/{id}' y el método DELETE en tu controlador CourseController.
-
-                    // Ejemplo de solicitud Ajax:
-
-                    window.location.href = '/admin/add-course;
-
-                    // Si no estás utilizando Ajax, puedes redirigir directamente a la ruta de eliminación.
-                    // window.location.href = '/delete-course/' + courseId;
+                if (confirm('¿Estás seguro de que deseas agregar este curso?')) {
+                    // Redirige a la ruta de agregar curso
+                    window.location.href = '/admin/add-course';
                 }
             });
 
@@ -105,11 +112,39 @@
 
                 var courseId = $(this).data('course-id');
 
-                    window.location.href = '/admin/add-course;
-
-
+                // Redirige a la ruta de detalles del curso
+                window.location.href = '/course-details/' + courseId;
             });
+
+
+            $('.matricularse-btn').click(function(e) {
+                e.preventDefault();
+
+                var courseId = $(this).data('course-id');
+                var userId = $(this).data('user-id');
+
+
+                if (confirm('¿Estás seguro de matricularte en este curso?')) {
+                    $.ajax({
+                        url: '/admin/courses/' + courseId + '/add-student/' + userId,
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(data) {
+                            alert('Matriculado exitosamente.');
+                            // Puedes redirigir o realizar otras acciones después del éxito.
+                        },
+                        error: function(error) {
+                            console.error('Error al matricularse:', error);
+                            alert('Hubo un error al intentar matricularte.');
+                        }
+                    });
+                }
+            });
+
 
         });
     </script>
 @endsection
+

@@ -24,4 +24,13 @@ class Course extends Model
     {
         return $this->belongsTo(Company::class, 'id_company');
     }
+
+
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'course_user', 'course_id', 'user_id')
+            ->withPivot('role')
+            ->withTimestamps();
+    }
 }

@@ -13,10 +13,17 @@ class CourseController extends Controller
 
    public function details($id)
     {
+        $user=Auth::user();
         $course = Course::findOrFail($id);
         $companies = Company::all();
+        $docentesNombres = $course->users()
+    ->wherePivot('role', 'docente')->get();
 
-        return view('vendor.voyager.courses.details', compact('course', 'companies'));
+    $estudiantesNombres = $course->users()
+    ->wherePivot('role', 'alumno')->get();
+
+
+        return view('vendor.voyager.courses.details', compact('course', 'companies','docentesNombres','user','estudiantesNombres'));
     }
 
 
