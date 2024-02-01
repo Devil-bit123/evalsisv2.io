@@ -28,3 +28,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::any('/info-update/{id}', [InfoController::class, 'update'])->name('info.update');
 
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

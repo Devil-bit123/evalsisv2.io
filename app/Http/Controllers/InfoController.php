@@ -28,6 +28,7 @@ class InfoController extends Controller
             'fechaNacimiento.required' => 'El campo fecha de nacimiento es obligatorio.',
             'fechaNacimiento.date' => 'Por favor, ingrese una fecha de nacimiento válida.',
             'cedula.required' => 'El campo cédula es obligatorio.',
+            'cedula.unique' => 'Su cédula ya ha sido registrada.',
             'cedula.digits_between' => 'La cédula debe tener entre 10 y 13 dígitos.',
             'direccion.required' => 'El campo dirección es obligatorio.',
         ];
