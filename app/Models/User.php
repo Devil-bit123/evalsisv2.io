@@ -64,4 +64,12 @@ class User extends \TCG\Voyager\Models\User
     if ($user) {
     $user->deleteInfo();
     */
+
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class, 'user_company', 'user_id', 'company_id');
+    }
+
+
+
 }
