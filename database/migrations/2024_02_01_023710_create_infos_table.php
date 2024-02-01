@@ -15,7 +15,6 @@ class CreateInfosTable extends Migration
     {
         Schema::create('infos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_user');
             $table->json('info');
             $table->timestamps();
         });
