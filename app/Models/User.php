@@ -21,6 +21,7 @@ class User extends \TCG\Voyager\Models\User
         'name',
         'email',
         'password',
+        'id_info',
     ];
 
     /**
@@ -41,4 +42,26 @@ class User extends \TCG\Voyager\Models\User
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // Relación inversa con la tabla infos
+    public function info()
+    {
+        return $this->belongsTo(Info::class, 'id_info');
+    }
+
+    /*
+    $user = \App\Models\User::find(1);
+    $info = $user->info;
+    */
+
+    public function deleteInfo()
+    {
+        $this->info()->delete();
+    }
+
+    /*
+    $user = User::find($userId);
+    if ($user) {
+    $user->deleteInfo();
+    */
 }

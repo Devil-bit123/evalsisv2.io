@@ -48,7 +48,17 @@
                     <li class="divider"></li>
                     <?php $nav_items = config('voyager.dashboard.navbar_items'); ?>
                     @if(is_array($nav_items) && !empty($nav_items))
+                    @php
+                    $user = Auth::user();
+                    @endphp
+                    @if ($user->info)
+
+                    <a href="{{ route('info.edit',['id' => $user->id]) }}" class="btn btn-info">Editar Info</a>
+
+                    @endif
+
                     @foreach($nav_items as $name => $item)
+
                     <li {!! isset($item['classes']) && !empty($item['classes']) ? 'class="'.$item['classes'].'"' : '' !!}>
                         @if(isset($item['route']) && $item['route'] == 'voyager.logout')
                         <form action="{{ route('voyager.logout') }}" method="POST">
