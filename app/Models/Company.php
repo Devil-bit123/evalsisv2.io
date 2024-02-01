@@ -18,4 +18,11 @@ class Company extends Model
         'address',
     ];
 
+    // Relación One-to-Many con el modelo Course
+    public function courses()
+    {
+        return $this->hasMany(Course::class, 'id_company');
+    }
+
+
 }

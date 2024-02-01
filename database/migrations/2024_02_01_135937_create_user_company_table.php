@@ -9,8 +9,8 @@ class CreateUserCompanyTable extends Migration
     {
         Schema::create('user_company', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('company_id')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');

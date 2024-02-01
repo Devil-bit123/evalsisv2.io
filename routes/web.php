@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InfoController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\UserCompanyController;
 
 /*
@@ -33,6 +34,32 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('/inscription-store/{id}', [UserCompanyController::class, 'store'])->name('inscription.store');
     Route::get('/remove-user-from-company/{userId}/{companyId}', [UserCompanyController::class, 'removeUserFromCompany'])
     ->name('remove.user.from.company');
+
+    //Cursos
+
+    Route::get('/index-course', [CourseController::class, 'index'])
+    ->name('courses.index');
+
+    Route::post('/create-course', [CourseController::class, 'store'])
+    ->name('courses.store');
+
+    Route::get('/edit-course/{id}', [CourseController::class, 'edit'])
+    ->name('courses.edit');
+
+    Route::put('/update-course/{id}', [CourseController::class, 'update'])
+    ->name('courses.update');
+
+    Route::any('/delete-course/{id}', [CourseController::class, 'destroy'])
+    ->name('courses.delete');
+
+    Route::any('/add-course', [CourseController::class, 'add'])
+    ->name('courses.add');
+
+    Route::get('/details-course/{id}', [CourseController::class, 'details'])
+    ->name('courses.details');
+
+
+
 
 
 

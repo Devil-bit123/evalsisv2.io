@@ -37,12 +37,22 @@ class UserCompanyController extends Controller
 
     public function removeUserFromCompany(Request $request, $userId, $companyId)
     {
-        // Desasociar el usuario de la compañía
-        User::find($userId)->companies()->detach($companyId);
+        // Obtener el usuario y la compañía
+        $user = User::find($userId);
+        $company = Company::find($companyId);
 
-        // Puedes redirigir a donde sea necesario después de eliminar la asociación.
-        return redirect()->route('info.view');
+        // Verificar si el usuario y la compañía existen
+        if ($user && $company) {
+            // Desasociar el usuario de la compañía
+            $user->companies()->detach($company);
+
+            // Puedes redirigir a donde sea necesario después de eliminar la asociación.
+            return redirect()->route('info.view');
+        } else {
+            // Manejar el caso en el que el usuario o la compañía no existan
+            // Puedes redirigir a una página de error o hacer algo más según tus necesidades.
+            return redirect()->route('info.view');
+        }
     }
-
 
 }
