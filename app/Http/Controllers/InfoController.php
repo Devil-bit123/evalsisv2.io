@@ -59,7 +59,8 @@ class InfoController extends Controller
         $user->info()->associate($info);
         $user->save();
 
-        return view('info.add', compact('user'));
+        return redirect()->route('voyager.dashboard');
+
     }
 
 

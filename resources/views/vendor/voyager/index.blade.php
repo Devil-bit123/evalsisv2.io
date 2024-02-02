@@ -49,6 +49,19 @@
                             <p>Fecha de Nacimiento: {{ $infoData['date'] ?? 'No disponible' }}</p>
                             <p>Teléfono: {{ $infoData['phone'] ?? 'No disponible' }}</p>
                             <p>Dirección: {{ $infoData['address'] ?? 'No disponible' }}</p>
+
+                            @if ($user->companies)
+                            <strong><p>Usted trabaja en:</p></strong>
+                            @foreach ($user->companies as $company )
+                            <p>Compania: {{ $company->name ?? 'No disponible' }}</p>
+                            <p>Direccion: {{ $company->address ?? 'No disponible' }}</p>
+                            <p>Telefono: {{ $company->phone ?? 'No disponible' }}</p>
+                            @endforeach
+
+
+                            @endif
+
+
                         @else
                             <div class="card w-75 mb-3">
                                 <div class="card-body">

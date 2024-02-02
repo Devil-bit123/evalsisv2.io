@@ -11,6 +11,9 @@ class Info extends Model
     use HasFactory;
 
 
+    protected $table = 'infos';
+
+
     protected $fillable = [
         'info'
     ];
@@ -36,4 +39,6 @@ class Info extends Model
         // Actualiza la información
         $info->updateInfo($newInfo);
     */
+
+
 }
