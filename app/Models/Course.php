@@ -26,6 +26,12 @@ class Course extends Model
     }
 
 
+    public function exams()
+{
+    return $this->hasMany(Exam::class, 'id_course', 'id'); // Ajusta según el nombre correcto de las claves
+}
+
+
 
     public function users()
     {

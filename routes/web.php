@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ExamController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseUserController;
@@ -59,7 +60,7 @@ Route::group(['prefix' => 'admin'], function () {
     ->name('courses.details');
 
 
-    //
+    //Inscription-Matirculation
     Route::get('/courses/{course}/add-teacher', [CourseUserController::class, 'showAddTeacherForm'])->name('courses.addTeacher');
     Route::post('/courses/{course}/add-teacher', [CourseUserController::class, 'addTeacher'])->name('courses.storeTeacher');
     Route::delete('/courses/{course}/remove-teacher/{teacher}', [CourseUserController::class, 'removeTeacher'])->name('courses.removeTeacher');
@@ -69,7 +70,16 @@ Route::group(['prefix' => 'admin'], function () {
 
     Route::delete('/courses/{course}/remove-student/{student}', [CourseUserController::class, 'removeStudent'])->name('courses.removeStudent');
 
+    //Exams
+    // routes/web.php
 
+    Route::get('/exams', [ExamController::class, 'index'])->name('exams.index');
+    Route::get('/course/{course}/create-exam', [ExamController::class, 'createExamForm'])->name('courses.create_exam_form');
+    Route::post('/course/{course}/exams', [ExamController::class, 'storeExam'])->name('courses.store_exam');
+    Route::get('/courses/{course}/exams/', [ExamController::class, 'showexam'])->name('exams.show');
+    Route::get('/exams/{examId}/edit', 'ExamController@edit')->name('exams.edit');
+    Route::put('/exams/{examId}', 'ExamController@update')->name('exams.update');
+    Route::delete('/exams-destrot/{examId}', [ExamController::class, 'destroy'])->name('exams.destroy');
 
 
 });
