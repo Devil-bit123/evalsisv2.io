@@ -6,14 +6,23 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @if ($user->role->name == 'admin' || $user->role->name == 'docente')
-    <a href="{{ route('courses.add') }}"
-        class="btn btn-warning">Agregar</a>
-
-
-@endif
+        <a href="{{ route('courses.add') }}" class="btn btn-warning">Agregar</a>
+    @endif
 
     <div class="container">
         <div class="row justify-content-center">
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             @foreach ($courses as $course)
                 <div class="col-md-4 mb-4">
                     <div class="card">
@@ -22,28 +31,27 @@
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">{{ $course->description }}</h5>
-                            <a href="{{ route('courses.details', ['id' => $course->id]) }}" class="btn btn-primary">Ver detalles</a>
+                            <a href="{{ route('courses.details', ['id' => $course->id]) }}" class="btn btn-primary">Ver
+                                detalles</a>
                             @if ($user->role->name == 'admin' || $user->role->name == 'docente')
                                 <a href="{{ route('courses.edit', ['id' => $course->id]) }}"
                                     class="btn btn-warning">Editar</a>
                             @endif
                             @if ($user->role->name == 'admin')
-                            <a href="{{ route('courses.addTeacher',['course' => $course->id]) }}"
-                            class="btn btn-warning">Agregar Maestro</a>
-
+                                <a href="{{ route('courses.addTeacher', ['course' => $course->id]) }}"
+                                    class="btn btn-warning">Agregar Maestro</a>
                                 <a href="{{ route('courses.delete', ['id' => $course->id]) }}"
                                     class="btn btn-danger">Eliminar</a>
                             @endif
-
                             @if ($user->role->name == 'alumno')
-                            <a href="#" class="btn btn-danger matricularse-btn"
-                            data-course-id="{{ $course->id }}"
-                            data-user-id="{{ $user->id }}">Matricularse</a>
-
-
-
+                                <a href="#" class="btn btn-danger matricularse-btn"
+                                    data-course-id="{{ $course->id }}"
+                                    data-user-id="{{ $user->id }}">Matricularse</a>
                             @endif
-
+                            @if ($user->role->name == 'docente')
+                                <a href="#" class="btn btn-danger dictar-btn" data-course-id="{{ $course->id }}"
+                                    data-user-id="{{ $user->id }}">Dictar</a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -123,7 +131,6 @@
                 var courseId = $(this).data('course-id');
                 var userId = $(this).data('user-id');
 
-
                 if (confirm('¿Estás seguro de matricularte en este curso?')) {
                     $.ajax({
                         url: '/admin/courses/' + courseId + '/add-student/' + userId,
@@ -131,20 +138,83 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        success: function(data) {
-                            alert('Matriculado exitosamente.');
-                            // Puedes redirigir o realizar otras acciones después del éxito.
+                        success: function(response) {
+                            if (response.success) {
+                                alert('Matriculado exitosamente.');
+                                // Puedes redirigir o realizar otras acciones después del éxito.
+                            } else {
+                                alert('Error al matricularse: ' + response.message);
+                            }
                         },
-                        error: function(error) {
-                            console.error('Error al matricularse:', error);
-                            alert('Hubo un error al intentar matricularte.');
+                        error: function(xhr, status, error) {
+                            var errorMessage;
+                            try {
+                                // Intenta parsear el JSON para obtener el mensaje específico
+                                var responseJson = JSON.parse(xhr.responseText);
+                                errorMessage = responseJson.message || 'Error desconocido';
+                            } catch (e) {
+                                errorMessage = 'Error desconocido';
+                            }
+
+                            console.error('Error al intentar matricularse:', xhr, status,
+                                error);
+                            alert('Hubo un error al intentar matricularte. Detalles: ' +
+                                errorMessage);
                         }
                     });
                 }
             });
 
 
+            $('.dictar-btn').click(function(e) {
+                e.preventDefault();
+
+                var courseId = $(this).data('course-id');
+                var userId = $(this).data('user-id');
+
+                if (confirm('¿Estás seguro de inscribirte como maestro en este curso?')) {
+                    // Realiza una solicitud Ajax para agregar al usuario como maestro en el curso
+                    $.ajax({
+                        url: '/admin/courses/' + courseId + '/add-teacher/' + userId,
+                        type: 'POST', // Cambia a método POST ya que estás enviando datos al servidor
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            'user_id': userId // Asegúrate de incluir el campo user_id en los datos enviados
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                alert('Inscrito como maestro exitosamente.');
+                                // Puedes redirigir o realizar otras acciones después del éxito.
+                            } else {
+                                alert('Error al inscribirse como maestro: ' + response.message);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            var errorMessage;
+                            try {
+                                // Intenta parsear el JSON para obtener el mensaje específico
+                                var responseJson = JSON.parse(xhr.responseText);
+                                errorMessage = responseJson.message || 'Error desconocido';
+                            } catch (e) {
+                                errorMessage = 'Error desconocido';
+                            }
+
+                            console.error('Error al intentar inscribirse como maestro:', xhr,
+                                status, error);
+                            alert('Hubo un error al intentar inscribirse como maestro. Detalles: ' +
+                                errorMessage);
+                        }
+                    });
+                }
+            });
+
+
+
+
+
+
         });
     </script>
 @endsection
-

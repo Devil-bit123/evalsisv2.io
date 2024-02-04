@@ -94,7 +94,7 @@
 
 
                     @if ($estudiantesNombres->isEmpty())
-                        <p>No hay docentes asignados a este curso.</p>
+                        <p>No hay estudiantes asignados a este curso.</p>
                     @else
                         <h5 class="card-title">Estudiantes:</h5>
                         <ul>

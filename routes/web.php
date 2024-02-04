@@ -61,8 +61,10 @@ Route::group(['prefix' => 'admin'], function () {
 
 
     //Inscription-Matirculation
-    Route::get('/courses/{course}/add-teacher', [CourseUserController::class, 'showAddTeacherForm'])->name('courses.addTeacher');
-    Route::post('/courses/{course}/add-teacher', [CourseUserController::class, 'addTeacher'])->name('courses.storeTeacher');
+    Route::get('/courses/{course}/add-teacher/{id}', [CourseUserController::class, 'showAddTeacherForm'])->name('courses.addTeacher');
+    Route::post('/courses/{course}/add-teacher/{id}', [CourseUserController::class, 'addTeacher'])->name('courses.storeTeacher');
+
+
     Route::delete('/courses/{course}/remove-teacher/{teacher}', [CourseUserController::class, 'removeTeacher'])->name('courses.removeTeacher');
 
     Route::get('/courses/{course}/add-student/{id}', [CourseUserController::class, 'addStudentForm'])->name('courses.addStudentForm');
@@ -74,6 +76,7 @@ Route::group(['prefix' => 'admin'], function () {
     // routes/web.php
 
     Route::get('/exams', [ExamController::class, 'index'])->name('exams.index');
+    Route::get('/exams', [ExamController::class, 'index'])->name('voyager.exams.index');
     Route::get('/course/{course}/create-exam', [ExamController::class, 'createExamForm'])->name('courses.create_exam_form');
     Route::post('/course/{course}/exams', [ExamController::class, 'storeExam'])->name('courses.store_exam');
     Route::get('/courses/{course}/exams/', [ExamController::class, 'showexam'])->name('exams.show');
