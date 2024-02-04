@@ -5,6 +5,7 @@ use App\Http\Controllers\ExamController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseUserController;
+use App\Http\Controllers\MyCourseViewController;
 use App\Http\Controllers\UserCompanyController;
 
 /*
@@ -74,7 +75,6 @@ Route::group(['prefix' => 'admin'], function () {
 
     //Exams
     // routes/web.php
-
     Route::get('/exams', [ExamController::class, 'index'])->name('exams.index');
     Route::get('/exams', [ExamController::class, 'index'])->name('voyager.exams.index');
     Route::get('/course/{course}/create-exam', [ExamController::class, 'createExamForm'])->name('courses.create_exam_form');
@@ -83,6 +83,16 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/exams/{examId}/edit', 'ExamController@edit')->name('exams.edit');
     Route::put('/exams/{examId}', 'ExamController@update')->name('exams.update');
     Route::delete('/exams-destrot/{examId}', [ExamController::class, 'destroy'])->name('exams.destroy');
+
+    //my course
+    Route::get('/my-course/{id}', [MyCourseViewController::class, 'dashboard'])->name('my-course.dashboard');
+    Route::get('/my-test-configuration/{id}', [MyCourseViewController::class, 'test_configuration'])->name('my-course.test_configuration');
+    Route::post('/my-test-configuration-add/', [MyCourseViewController::class, 'test_configuration_save'])->name('my-course.test_configuration_save');
+    Route::get('/my-test-configuration-show/{id}', [MyCourseViewController::class, 'test_configuration_show'])->name('my-course.test_configuration_show');
+    Route::get('/my-test-configuration-edit/{id}', [MyCourseViewController::class, 'test_configuration_edit'])->name('my-course.test_configuration_edit');
+    Route::put('/my-test-configuration-update/{id}', [MyCourseViewController::class, 'test_configuration_update'])->name('my-course.test_configuration_update');
+    Route::delete('/my-test-configuration-delete/{id}', [MyCourseViewController::class, 'test_configuration_delete'])->name('my-course.test_configuration_delete');
+
 
 
 });
