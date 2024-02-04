@@ -6,6 +6,16 @@
     <div class="card">
         <div class="card-body">
             <!-- Contenido actual de la vista parcial -->
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputBankName">Nombre del banco de preguntas</span>
+                <input id="bankName" type="text" class="form-control" aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-default">
+            </div>
+
+            <div class="input-group">
+                <span class="input-group-text">Descripcion</span>
+                <textarea id="bankDescription" class="form-control" aria-label="With textarea"></textarea>
+            </div>
         </div>
     </div>
 
@@ -27,7 +37,8 @@
                                 <input type="radio" name="correctResponse" value="{{ $responseIndex }}"
                                     @if (array_key_exists('correct_asnwer_index', $question) && $responseIndex == $question['correct_asnwer_index']) checked @endif>
                             </label>
-                            <button type="button" class="btn btn-warning" onclick="removeResponse(this)">Eliminar Respuesta</button>
+                            <button type="button" class="btn btn-warning" onclick="removeResponse(this)">Eliminar
+                                Respuesta</button>
                         </div>
                     @endforeach
                 </div>
@@ -109,6 +120,9 @@
 
             const questionForms = document.querySelectorAll('#questionsContainer form');
 
+            const bankName = document.getElementById('bankName').value;
+            const bankDescription = document.getElementById('bankDescription').value;
+
             const questions = Array.from(questionForms).map((form) => {
                 const title = form.querySelector('input[name="questionTitle"]').value;
                 const responseInputs = form.querySelectorAll('.responses input[name="response"]');
@@ -145,11 +159,13 @@
                 type: 'PUT',
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    questions
+                    questions,
+                    bankName,
+                    bankDescription
                 }),
                 success: function(response) {
                     alert('Examen actualizado exitosamente.');
-                    window.location.href = '{{ route('exams.index') }}';
+                    window.location.href = '{{ route('voyager.exams.index') }}';
                 },
                 error: function(error) {
                     console.error('Error al actualizar el examen:', error);

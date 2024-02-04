@@ -38,7 +38,7 @@
                                     class="btn btn-warning">Editar</a>
                             @endif
                             @if ($user->role->name == 'admin')
-                                <a href="{{ route('courses.addTeacher', ['course' => $course->id]) }}"
+                                <a href="{{ route('courses.addTeacher', ['course' => $course->id,'id' => $user->id]) }}"
                                     class="btn btn-warning">Agregar Maestro</a>
                                 <a href="{{ route('courses.delete', ['id' => $course->id]) }}"
                                     class="btn btn-danger">Eliminar</a>

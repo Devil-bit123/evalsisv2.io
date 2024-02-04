@@ -1,9 +1,11 @@
 @extends('voyager::master')
 
 @section('content')
-    <div class="card">
+
+<h1>Hola</h1>
+<div class="card">
         <div class="card-body">
-            Edición de examen: {{ $exam->title }}
+            Edición de banco: {{ $exam->name }}
         </div>
     </div>
 

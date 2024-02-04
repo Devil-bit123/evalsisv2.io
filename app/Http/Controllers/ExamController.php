@@ -31,26 +31,29 @@ class ExamController extends Controller
     public function storeExam(Request $request, Course $course)
     {
 
-        //dd($request);
-        // Validar los datos del formulario
         $request->validate([
+            'bankName' => 'required|string|max:255',
+            'bankDescription' => 'required|string|max:255',
             'questions' => 'required|array|min:1', // al menos una pregunta
             'questions.*.title' => 'required|string|max:255',
             'questions.*.responses' => 'required|array|min:2', // al menos dos respuestas
             'questions.*.responses.*' => 'required|string|max:255',
-            'questions.*.correct_asnwer_index' => 'required|int',
+            'questions.*.correct_asnwer_index' => 'required|int|min:0', // Asegúrate de que sea un índice válido
             'questions.*.correct_asnwer_text' => 'required|string',
         ]);
 
-        // Crear el examen
         $exam = Exam::create([
             'id_course' => $course->id,
+            'name' => $request->input('bankName'),
+            'description' => $request->input('bankDescription'),
             'questions' => $request->input('questions'),
         ]);
 
-        // Redireccionar o hacer lo que sea necesario después de crear el examen
-        return redirect()->route('exams.index'); // Reemplazar 'nombre_de_la_ruta' con la ruta a la que deseas redireccionar
+        $courses = Course::all();
+
+        return view('exams.index', compact('courses'));
     }
+
 
 
     public function showexam($course)
@@ -75,6 +78,8 @@ class ExamController extends Controller
     public function update(Request $request, $examId)
     {
         $request->validate([
+            'bankName' => 'required|string|max:255',
+            'bankDescription' => 'required|string|max:255',
             'questions' => 'required|array|min:1',
             'questions.*.title' => 'required|string|max:255',
             'questions.*.responses' => 'required|array|min:2',
@@ -84,6 +89,8 @@ class ExamController extends Controller
         ]);
 
         $exam = Exam::findOrFail($examId);
+        $exam->name = $request->bankName;
+        $exam->description = $request->bankDescription;
         $exam->questions = $request->questions;
         $exam->save();
 

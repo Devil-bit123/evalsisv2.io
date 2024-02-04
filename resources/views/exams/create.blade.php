@@ -11,6 +11,18 @@
     </div>
 </div>
 
+<div class="input-group mb-3">
+    <span class="input-group-text" id="inputBankName">Nombre del banco de preguntas</span>
+    <input id="bankName" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+</div>
+
+<div class="input-group">
+    <span class="input-group-text">Descripcion</span>
+    <textarea id="bankDescription" class="form-control" aria-label="With textarea"></textarea>
+</div>
+
+
+
 <!-- Modelo de pregunta -->
 
 <h2>Ingreso de Preguntas</h2>
@@ -98,6 +110,10 @@
     function saveQuestions() {
     const questionForms = document.querySelectorAll('#questionsContainer form');
 
+    const bankName = document.getElementById('bankName').value;
+    const bankDescription = document.getElementById('bankDescription').value;
+
+
     questions = Array.from(questionForms).map((form) => {
         const title = form.querySelector('input[name="questionTitle"]').value;
         const responseInputs = form.querySelectorAll('.responses input[name="response"]');
@@ -129,7 +145,7 @@
         url: '/admin/course/' + courseId + '/exams',
         type: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ questions }), // Envía el array JSON como cuerpo de la solicitud
+        data: JSON.stringify({ questions,bankName, bankDescription  }),
         success: function(response) {
             alert('Examen guardado exitosamente.');
             window.location.href = '/admin/exams';
