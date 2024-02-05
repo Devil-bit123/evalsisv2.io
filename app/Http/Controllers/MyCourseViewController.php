@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\TestHelper;
 use App\Models\Exam;
 use App\Models\Course;
 use App\Models\TestConfiguration;
@@ -32,10 +33,6 @@ class MyCourseViewController extends Controller
     {
 
         $exams = Exam::where('id_course', '=', $id)->get();
-
-
-
-
         return view('my-course.test-configuration', compact('exams'));
     }
 
@@ -147,7 +144,8 @@ class MyCourseViewController extends Controller
         }
     }
 
-    public function test_configuration_delete($id){
+    public function test_configuration_delete($id)
+    {
 
 
         $configuration = TestConfiguration::find($id);
@@ -158,8 +156,73 @@ class MyCourseViewController extends Controller
         $user = Auth::user();
         //$course = Course::find($id);
 
-        return view('my-course.dashboard',compact('user','course'));
+        return view('my-course.dashboard', compact('user', 'course'));
     }
+
+
+    public function test_view($id)
+    {
+        $course = Course::find($id);
+
+        // Check if the course is found
+        if (!$course) {
+            abort(404); // Or handle the case when the course is not found
+        }
+
+        $exams = $course->exams->flatMap->testConfigurations;
+        //dd($exams);
+
+        return view('my-course.my-test', compact('exams'));
+    }
+
+    public function take_test($id){
+
+        $user = Auth::user();
+        $test_configuration = TestConfiguration::find($id);
+        $questionBank = $test_configuration->exam->questions;
+        $questionamount = $test_configuration->number_questions;
+
+        $random_questions = TestHelper::get_random_questions($questionBank, $questionamount);
+        //dd($random_questions);
+        return view('my-course.take_test',compact('random_questions','user','test_configuration'));
+    }
+
+    public function submitTest(Request $request)
+    {
+        $validatedData = $request->validate([
+            'user_answers' => 'required|array',
+            'user_answers.*.title' => 'required|string',
+            'user_answers.*.responses' => 'required|array',
+            'user_answers.*.responses.*' => 'required|string',
+            'user_answers.*.correct_asnwer_text' => 'required|string',
+            'user_answers.*.correct_asnwer_index' => [
+                'required',
+                'integer',
+                Rule::in(['0', '1', '2', '3']),
+            ],
+            'user_answers.*.user_anser_text' => 'required|string',
+            'user_answers.*.user_anser_index' => [
+                'required',
+                'integer',
+                Rule::in(['0', '1', '2', '3']),
+            ],
+        ], $messages = [
+            'user_answers.*.correct_asnwer_index.in' => 'El índice de la respuesta correcta debe ser 0, 1, 2 o 3.',
+            'user_answers.*.user_anser_text.required' => 'El campo de texto de la respuesta del usuario es obligatorio.',
+            'user_answers.*.user_anser_index.required' => 'El índice de la respuesta del usuario es obligatorio.'
+        ]);
+
+
+        $user_answers = $request->input('user_answers');
+
+        $score =TestHelper::get_my_score($user_answers);
+
+        dd($request);
+
+
+        return redirect()->route('ruta_hacia_donde_redirigir_despues_de_enviar_el_test');
+    }
+
 
 
 }

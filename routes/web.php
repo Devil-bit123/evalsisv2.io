@@ -92,6 +92,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/my-test-configuration-edit/{id}', [MyCourseViewController::class, 'test_configuration_edit'])->name('my-course.test_configuration_edit');
     Route::put('/my-test-configuration-update/{id}', [MyCourseViewController::class, 'test_configuration_update'])->name('my-course.test_configuration_update');
     Route::delete('/my-test-configuration-delete/{id}', [MyCourseViewController::class, 'test_configuration_delete'])->name('my-course.test_configuration_delete');
+    Route::get('/my-tests/{id}', [MyCourseViewController::class, 'test_view'])->name('my-course.test_view');
+    Route::get('/take-my-tests/{id}', [MyCourseViewController::class, 'take_test'])->name('my-course.take_test');
+    Route::post('/submit-test/', [MyCourseViewController::class, 'submitTest'])->name('submit_test');
 
 
 

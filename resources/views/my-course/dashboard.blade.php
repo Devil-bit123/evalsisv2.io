@@ -48,6 +48,82 @@
             </div>
 
         @elseif ($user->role->name == 'alumno')
+
+        <div class="container text-center">
+            <div class="row">
+                <div class="col">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <p>Mis Profesores:</p>
+                            @foreach ($course->users as $professor)
+                                @if ($professor['pivot']['role'] === 'docente')
+                                    <!-- Display information about the teacher -->
+                                    <strong>{{ $professor['name'] }}<br></strong>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col">
+
+                    <div class="row">
+                        <!-- First card in the second column -->
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">Proximas tareas</h5>
+                                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Second card in the second column -->
+                        <div class="col-md-4 mt-3">
+                            <div class="card">
+                                <div class="card-header">
+
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">Proximos examenes</h5>
+                                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                    <a href="{{ route('my-course.test_view',['id'=>$course->id]) }}" class="btn btn-primary">Ir a examanes</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Third card in the second column -->
+                        <div class="col-md-4 mt-3">
+                            <div class="card">
+                                <div class="card-header">
+
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">Planificacion del curso</h5>
+                                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col">
+
+                    <!-- Content for the third column -->
+
+                </div>
+            </div>
+        </div>
+
+
+
+
         @endif
 
     @endauth
