@@ -13,16 +13,25 @@ class Exam extends Model
 
     protected $fillable = [
         'id_course',
+        'name',
+        'description',
         'questions'
     ];
 
 
     public function course()
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(Course::class, 'id_course', 'id');
     }
+
+
 
     protected $casts = [
         'questions' => 'array',
     ];
+
+    public function testConfigurations()
+    {
+        return $this->hasMany(TestConfiguration::class, 'id_exam', 'id');
+    }
 }

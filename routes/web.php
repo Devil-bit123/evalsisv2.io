@@ -5,6 +5,7 @@ use App\Http\Controllers\ExamController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseUserController;
+use App\Http\Controllers\MyCourseViewController;
 use App\Http\Controllers\UserCompanyController;
 
 /*
@@ -61,8 +62,10 @@ Route::group(['prefix' => 'admin'], function () {
 
 
     //Inscription-Matirculation
-    Route::get('/courses/{course}/add-teacher', [CourseUserController::class, 'showAddTeacherForm'])->name('courses.addTeacher');
-    Route::post('/courses/{course}/add-teacher', [CourseUserController::class, 'addTeacher'])->name('courses.storeTeacher');
+    Route::get('/courses/{course}/add-teacher/{id}', [CourseUserController::class, 'showAddTeacherForm'])->name('courses.addTeacher');
+    Route::post('/courses/{course}/add-teacher/{id}', [CourseUserController::class, 'addTeacher'])->name('courses.storeTeacher');
+
+
     Route::delete('/courses/{course}/remove-teacher/{teacher}', [CourseUserController::class, 'removeTeacher'])->name('courses.removeTeacher');
 
     Route::get('/courses/{course}/add-student/{id}', [CourseUserController::class, 'addStudentForm'])->name('courses.addStudentForm');
@@ -72,14 +75,27 @@ Route::group(['prefix' => 'admin'], function () {
 
     //Exams
     // routes/web.php
-
     Route::get('/exams', [ExamController::class, 'index'])->name('exams.index');
+    Route::get('/exams', [ExamController::class, 'index'])->name('voyager.exams.index');
     Route::get('/course/{course}/create-exam', [ExamController::class, 'createExamForm'])->name('courses.create_exam_form');
     Route::post('/course/{course}/exams', [ExamController::class, 'storeExam'])->name('courses.store_exam');
     Route::get('/courses/{course}/exams/', [ExamController::class, 'showexam'])->name('exams.show');
     Route::get('/exams/{examId}/edit', 'ExamController@edit')->name('exams.edit');
     Route::put('/exams/{examId}', 'ExamController@update')->name('exams.update');
     Route::delete('/exams-destrot/{examId}', [ExamController::class, 'destroy'])->name('exams.destroy');
+
+    //my course
+    Route::get('/my-course/{id}', [MyCourseViewController::class, 'dashboard'])->name('my-course.dashboard');
+    Route::get('/my-test-configuration/{id}', [MyCourseViewController::class, 'test_configuration'])->name('my-course.test_configuration');
+    Route::post('/my-test-configuration-add/', [MyCourseViewController::class, 'test_configuration_save'])->name('my-course.test_configuration_save');
+    Route::get('/my-test-configuration-show/{id}', [MyCourseViewController::class, 'test_configuration_show'])->name('my-course.test_configuration_show');
+    Route::get('/my-test-configuration-edit/{id}', [MyCourseViewController::class, 'test_configuration_edit'])->name('my-course.test_configuration_edit');
+    Route::put('/my-test-configuration-update/{id}', [MyCourseViewController::class, 'test_configuration_update'])->name('my-course.test_configuration_update');
+    Route::delete('/my-test-configuration-delete/{id}', [MyCourseViewController::class, 'test_configuration_delete'])->name('my-course.test_configuration_delete');
+    Route::get('/my-tests/{id}', [MyCourseViewController::class, 'test_view'])->name('my-course.test_view');
+    Route::get('/take-my-tests/{id}', [MyCourseViewController::class, 'take_test'])->name('my-course.take_test');
+    Route::post('/submit-test/', [MyCourseViewController::class, 'submitTest'])->name('submit_test');
+
 
 
 });

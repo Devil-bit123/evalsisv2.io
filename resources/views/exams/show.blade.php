@@ -9,14 +9,16 @@
         <div class="card">
 
             <div class="card-body">
-                <p>Banco creado el:</p>
-                <h5 class="card-title">{{ $exam->created_at }}</h5>
+                <p>Nombre:</p>
+                <h5 class="card-title">{{ $exam->name }}</h5>
+                <p>Descripción:</p>
+                <h5 class="card-title">{{ $exam->description }}</h5>
             </div>
             <div class="card-header">
                 <!-- Botón para abrir el modal -->
                 <button type="button" class="btn btn-primary" data-toggle="modal"
                     data-target="#examDetails{{ $exam->id }}">
-                    Ver detalles
+                    Ver Banco
                 </button>
                 <button type="button" class="btn btn-warning" onclick="editExam({{ $exam->id }})">
                     Editar
@@ -33,26 +35,26 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="examDetails{{ $exam->id }}Label">Detalles del Examen</h5>
+                        <h5 class="modal-title" id="examDetails{{ $exam->id }}Label">Preguntas del Banco</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <!-- Decodificar el JSON de preguntas -->
-
-                        @php
+                          @php
                             // Ensure $questions is an array
                             $questions = is_array($exam->questions) ? $exam->questions : [];
                         @endphp
-
-                        <p>Creado el:</p>
-                        <!-- Mostrar detalles del examen -->
+                        <strong><p>Nombre:</p></strong>
+                        <p>{{ $exam->name }}</p>
+                        <strong><p>Descripción:</p></strong>
+                        <p>{{ $exam->description }}</p>
+                        <strong><p>Creado el:</p></strong>
                         <p>{{ $exam->created_at }}</p>
 
                         <!-- Iterar sobre las preguntas -->
                         @foreach ($questions as $index => $question)
-                            <p>Pregunta {{ $index }}: {{ $question['title'] }}</p>
+                            <strong><p>Pregunta {{ $index }}: {{ $question['title'] }}</p></strong>
                             <ul>
                                 <!-- Iterar sobre las respuestas -->
                                 @foreach ($question['responses'] as $response)
@@ -61,7 +63,7 @@
                             </ul>
 
                             @if (array_key_exists('correct_asnwer_index', $question))
-                                <p>Respuesta Correcta: {{ $question['correct_asnwer_text'] }}</p>
+                                <strong><p>Respuesta Correcta: {{ $question['correct_asnwer_text'] }}</p></strong>
                             @else
                                 <p>Respuesta Correcta no especificada</p>
                             @endif
