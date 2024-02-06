@@ -95,7 +95,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/my-tests/{id}', [MyCourseViewController::class, 'test_view'])->name('my-course.test_view');
     Route::get('/take-my-tests/{id}', [MyCourseViewController::class, 'take_test'])->name('my-course.take_test');
     Route::post('/submit-test/', [MyCourseViewController::class, 'submitTest'])->name('submit_test');
-
+    Route::get('/my-score/{id}', [MyCourseViewController::class, 'my_score'])->name('my-course.my_score');
 
 
 });
