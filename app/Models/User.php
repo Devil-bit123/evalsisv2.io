@@ -86,4 +86,10 @@ class User extends \TCG\Voyager\Models\User
     {
         $this->courses()->attach($course->id, ['role' => 'docente']);
     }
+
+    public function tests()
+{
+    return $this->hasMany(Test::class, 'id_user');
+}
+
 }

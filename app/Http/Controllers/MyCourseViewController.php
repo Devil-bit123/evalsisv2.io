@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\TestHelper;
 use App\Models\Exam;
+use App\Models\Test;
 use App\Models\Course;
-use App\Models\TestConfiguration;
+use App\Helpers\TestHelper;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Models\TestConfiguration;
 use Illuminate\Support\Facades\Auth;
 
 class MyCourseViewController extends Controller
@@ -163,19 +164,35 @@ class MyCourseViewController extends Controller
     public function test_view($id)
     {
         $course = Course::find($id);
+        $user = Auth::user();
 
         // Check if the course is found
         if (!$course) {
             abort(404); // Or handle the case when the course is not found
         }
 
-        $exams = $course->exams->flatMap->testConfigurations;
-        //dd($exams);
+        $testConfigurations = $course->exams->flatMap->testConfigurations;
+        $testResults = []; // Initialize an array to store test results
 
-        return view('my-course.my-test', compact('exams'));
+        foreach ($testConfigurations as $e) {
+            $response = Test::where('id_test_configuration', '=', $e->id)->first();
+
+            // Add the current test result to the array
+            $testResults[] = $response;
+        }
+
+
+        //dd($testResults);
+
+
+
+        return view('my-course.my-test', compact('testConfigurations', 'user','testResults'));
     }
 
-    public function take_test($id){
+
+
+    public function take_test($id)
+    {
 
         $user = Auth::user();
         $test_configuration = TestConfiguration::find($id);
@@ -184,45 +201,34 @@ class MyCourseViewController extends Controller
 
         $random_questions = TestHelper::get_random_questions($questionBank, $questionamount);
         //dd($random_questions);
-        return view('my-course.take_test',compact('random_questions','user','test_configuration'));
+        return view('my-course.take_test', compact('random_questions', 'user', 'test_configuration'));
     }
 
     public function submitTest(Request $request)
     {
-        $validatedData = $request->validate([
-            'user_answers' => 'required|array',
-            'user_answers.*.title' => 'required|string',
-            'user_answers.*.responses' => 'required|array',
-            'user_answers.*.responses.*' => 'required|string',
-            'user_answers.*.correct_asnwer_text' => 'required|string',
-            'user_answers.*.correct_asnwer_index' => [
-                'required',
-                'integer',
-                Rule::in(['0', '1', '2', '3']),
-            ],
-            'user_answers.*.user_anser_text' => 'required|string',
-            'user_answers.*.user_anser_index' => [
-                'required',
-                'integer',
-                Rule::in(['0', '1', '2', '3']),
-            ],
-        ], $messages = [
-            'user_answers.*.correct_asnwer_index.in' => 'El índice de la respuesta correcta debe ser 0, 1, 2 o 3.',
-            'user_answers.*.user_anser_text.required' => 'El campo de texto de la respuesta del usuario es obligatorio.',
-            'user_answers.*.user_anser_index.required' => 'El índice de la respuesta del usuario es obligatorio.'
+        $user = Auth::user();
+        $user_answers = $request->input('userResponses');
+        $score = TestHelper::get_my_score($user_answers);
+
+        $test = new Test([
+            'id_user' => $user->id,
+            'id_test_configuration' => $request->input('id_test_configuration'),
+            'responses' => json_encode($request->input('userResponses')),
+            'score' => $score,
+            'completed_status' => $request->input('complete_status'),
         ]);
+        //dd($test);
+        $test->save();
+        $configuration = TestConfiguration::find($request->input('id_test_configuration'));
+        $course = $configuration->exam->course;
 
+        // Crear una respuesta JSON con la URL de redirección y cualquier otro dato que desees enviar
+        $response = [
+            'redirect_url' => route('my-course.dashboard', ['id' => $course->id]),
+            'message' => 'Test submitted successfully.', // O cualquier otro mensaje que desees enviar
+        ];
 
-        $user_answers = $request->input('user_answers');
-
-        $score =TestHelper::get_my_score($user_answers);
-
-        dd($request);
-
-
-        return redirect()->route('ruta_hacia_donde_redirigir_despues_de_enviar_el_test');
+        // Retornar la respuesta JSON
+        return response()->json($response);
     }
-
-
-
 }
