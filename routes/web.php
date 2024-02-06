@@ -63,7 +63,7 @@ Route::group(['prefix' => 'admin'], function () {
 
     //Inscription-Matirculation
     Route::get('/courses/{course}/add-teacher/{id}', [CourseUserController::class, 'showAddTeacherForm'])->name('courses.addTeacher');
-    Route::post('/courses/{course}/add-teacher/{id}', [CourseUserController::class, 'addTeacher'])->name('courses.storeTeacher');
+    Route::post('/courses/{course}/add-teacher/{id?}', [CourseUserController::class, 'addTeacher'])->name('courses.storeTeacher');
 
 
     Route::delete('/courses/{course}/remove-teacher/{teacher}', [CourseUserController::class, 'removeTeacher'])->name('courses.removeTeacher');
