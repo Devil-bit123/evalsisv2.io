@@ -1,261 +1,218 @@
 @extends('voyager::master')
 
 @section('content')
-    @auth
+    <div class="container">
+        <h1>Tomar Examen</h1>
 
-        <div class="card">
-            <div class="card-body">
-                <h3>Estudiante, {{ $user->name }}</h3>
-                <p>Para empezar a resolver el curso, haz clic en "Empezar". Recuerda que cuentas con
-                    <strong>{{ $test_configuration->time }} minutos</strong> para resolverlo desde el momento en que presionas
-                    "Empezar".
-                </p>
-                <button type="button" class="btn btn-success" id="startButton">Empezar</button>
-                <p id="timerDisplay"></p>
-            </div>
+        <p>Bienvenido, {{ $user->name }}.</p>
+        <p>Para completar las preguntas, da clic en empezar, tienes <span
+                id="countdown">{{ $test_configuration->time }}</span> minutos para resolver el examen</p>
+
+
+                 <!-- Agrega este bloque para mostrar el tiempo restante -->
+        <div id="timerDisplay" style="display: none;">
+          <h5>Tiempo restante: <span id="minutes">00</span>:<span id="seconds">00</span></h5>
         </div>
 
-        <div id="errorContainer"></div>
 
-        <div id="questionsContainer" style="display: none;">
-            <!-- Aquí se mostrarán las preguntas -->
-            @foreach ($random_questions as $index => $question)
-                <div class="question" id="question{{ $index + 1 }}"
-                    data-correct-answer-index="{{ $question['correct_asnwer_index'] }}">
-                    <h4>{{ $question['title'] }}</h4>
-                    <!-- Mostrar las opciones de respuesta como botones de radio -->
-                    @foreach ($question['responses'] as $responseIndex => $response)
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="response{{ $index + 1 }}"
-                                id="response{{ $index + 1 }}_{{ $responseIndex }}" value="{{ $responseIndex }}">
-                            <label class="form-check-label" for="response{{ $index + 1 }}_{{ $responseIndex }}">
-                                {{ $response }}
-                            </label>
-                        </div>
-                    @endforeach
-                </div>
-            @endforeach
-
-            <button type="button" class="btn btn-primary" id="submitButton">Enviar Respuestas</button>
+        <!-- Agrega un div para mostrar la pregunta actual -->
+        <div id="questionContainer" style="display: none;">
+            <h3 id="questionTitle"></h3>
+            <form id="responseForm">
+                <ul id="responseList"></ul>
+            </form>
+            <button id="nextButton" onclick="nextQuestion()">Siguiente</button>
         </div>
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
 
 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script>
-            $(document).ready(function() {
-                // Variable para almacenar el tiempo restante
-                var countdownTimer;
+        <!-- Utiliza startTimerWithConfirmation en lugar de startTimer directamente -->
+        <button type="button" class="btn btn-success" id="startBtn"
+            onclick="startTimerWithConfirmation()">Empezar</button>
+    </div>
 
-                // Recuperar el tiempo restante del almacenamiento local
-                var storedTime = localStorage.getItem('timeRemaining');
-                var startWithoutConfirmation = localStorage.getItem('startWithoutConfirmation');
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-                // Función para iniciar el contador
-                function startCountdown(minutes) {
-                    var seconds = minutes * 60;
-                    countdownTimer = setInterval(function() {
-                        var minutesDisplay = Math.floor(seconds / 60);
-                        var secondsDisplay = seconds % 60;
-                        $('#timerDisplay').text('Tiempo restante: ' + minutesDisplay + 'm ' + secondsDisplay +
-                            's');
+    <script>
 
-                        if (seconds === 0) {
-                            clearInterval(countdownTimer);
-                            alert('¡Tiempo agotado!');
+        var test_conf = {{ $test_configuration->id }};
+        // Obtén las preguntas desde la variable de PHP y conviértelas a formato JavaScript
+        var randomQuestions = @json($random_questions);
+        console.log(randomQuestions);
 
-                            $.ajax({
-                                url: '/admin/submit-test/',
-                                method: 'POST',
-                                data: {
-                                    user_answers: userAnswers,
-                                    _token: '{{ csrf_token() }}',
-                                    complete_status: 'partial'
-                                },
-                                success: function(response) {
-                                    console.log(response);
-                                    // Aquí puedes manejar la respuesta del servidor si es necesario
-                                },
-                                error: function(error) {
-                                    console.error(error);
-                                    // Manejar errores si es necesario
-                                }
-                            });
+        // Otras variables necesarias
+        var currentQuestionIndex = 0; // Índice de la pregunta actual
+        var userResponses = []; // Array para almacenar las respuestas del usuario
 
-                        }
+        var timeParts = "{{ $test_configuration->time }}".split(":");
+        var totalMinutes = parseInt(timeParts[0]) * 60 + parseInt(timeParts[1]);
 
-                        // Almacenar el tiempo restante en el almacenamiento local
-                        localStorage.setItem('timeRemaining', seconds);
+        var currentQuestion = randomQuestions[currentQuestionIndex];
 
-                        seconds--;
-                    }, 1000);
-                }
+        // Función para mostrar la pregunta actual
+        function showCurrentQuestion() {
+            currentQuestion = randomQuestions[currentQuestionIndex];
+            document.getElementById("questionTitle").textContent = currentQuestion.title;
 
-                // Función para convertir formato HH:MM a minutos
-                function convertToMinutes(timeString) {
-                    var parts = timeString.split(":");
-                    var hours = parseInt(parts[0], 10);
-                    var minutes = parseInt(parts[1], 10);
-                    return hours * 60 + minutes;
-                }
+            var responseList = document.getElementById("responseList");
+            responseList.innerHTML = "";
 
-                // Función para mostrar las preguntas y ocultar el mensaje de inicio
-                function showQuestions() {
-                    $('#questionsContainer').show(); // Mostrar el contenedor de preguntas
-                    $('#timerDisplay').text(''); // Limpiar el mensaje de tiempo restante
-                    $('#startButton').hide(); // Ocultar el botón "Empezar"
-                }
+            // Agregar respuestas como opciones de radio
+            currentQuestion.responses.forEach(function(response, index) {
+                var listItem = document.createElement("li");
+                var radioInput = document.createElement("input");
+                radioInput.type = "radio";
+                radioInput.name = "responseOption";
+                radioInput.value = index;
+                radioInput.id = "responseOption_" + index;
 
-                // Manejador de eventos para el botón de inicio
-                $('#startButton').on('click', function() {
-                    // Convertir el tiempo a minutos
-                    var timeInMinutes = convertToMinutes("{{ $test_configuration->time }}");
+                var label = document.createElement("label");
+                label.textContent = response;
+                label.setAttribute("for", "responseOption_" + index);
 
-                    // Utilizar el tiempo almacenado si está disponible
-                    if (storedTime) {
-                        timeInMinutes = storedTime / 60; // Convertir a minutos
-                    }
-
-                    // Si se había almacenado 'startWithoutConfirmation' como 'true', iniciar el contador automáticamente
-                    if (startWithoutConfirmation && JSON.parse(startWithoutConfirmation)) {
-                        startCountdown(timeInMinutes);
-                        showQuestions(); // Llamar a la función para mostrar las preguntas
-                    } else {
-                        // Preguntar al usuario si realmente desea empezar
-                        var confirmStart = confirm('¿Estás seguro de que deseas comenzar?');
-
-                        if (confirmStart) {
-                            startCountdown(timeInMinutes);
-                            showQuestions(); // Llamar a la función para mostrar las preguntas
-
-                            // Almacenar que se inició el contador sin cancelar
-                            localStorage.setItem('startWithoutConfirmation', 'true');
-                        } else {
-                            // Almacenar que se canceló el inicio del contador
-                            localStorage.setItem('startWithoutConfirmation', 'false');
-                        }
-                    }
-                });
-
-                // Manejador de eventos para el botón de envío
-                $('#submitButton').on('click', function() {
-                    var userAnswers = []; // Array para almacenar las respuestas del usuario
-
-                    // Recorrer cada pregunta y obtener la respuesta seleccionada por el usuario
-                    $('.question').each(function(index) {
-                        var questionTitle = $(this).find('h4').text();
-                        var selectedResponseIndex = $('input[name="response' + (index + 1) +
-                            '"]:checked').val();
-                        var selectedResponseText = $(this).find('label[for="response' + (index + 1) +
-                            '_' + selectedResponseIndex + '"]').text();
-
-                        var userAnswer = {
-                            "title": questionTitle,
-                            "responses": getResponsesArray(index + 1),
-                            "correct_asnwer_text": getCorrectAnswerText(index + 1),
-                            "correct_asnwer_index": getCorrectAnswerIndex(index + 1),
-                            "user_anser_text": selectedResponseText,
-                            "user_anser_index": selectedResponseIndex
-                        };
-
-                        userAnswers.push(userAnswer);
-                    });
-
-
-                    $.ajax({
-                        url: '/admin/submit-test/',
-                        method: 'POST',
-                        data: {
-                            complete_status: 'complete',
-                            user_answers: userAnswers,
-                            _token: '{{ csrf_token() }}',
-                        },
-                        success: function(response) {
-                            console.log(response);
-                            // Aquí puedes manejar la respuesta del servidor si es necesario
-
-                            // Agregar lógica adicional según sea necesario
-                            // Por ejemplo, redirigir a otra página después del éxito
-
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            console.error(jqXHR);
-
-                            // Mostrar los errores en la vista
-                            if (jqXHR.responseJSON && jqXHR.responseJSON.errors) {
-                                var errorMessages = jqXHR.responseJSON.errors;
-                                var errorMessageList = '<ul>';
-
-                                for (var field in errorMessages) {
-                                    if (errorMessages.hasOwnProperty(field)) {
-                                        errorMessageList += '<li>' + errorMessages[field].join(
-                                            ', ') + '</li>';
-                                    }
-                                }
-
-                                errorMessageList += '</ul>';
-
-                                // Mostrar errores en un contenedor en tu vista
-                                $('#errorContainer').html('<div class="alert alert-danger">' +
-                                    errorMessageList + '</div>');
-                            } else {
-                                // Manejar otros errores si es necesario
-                            }
-                        }
-                    });
-
-                    console.log(userAnswers);
-                });
-
-                // Función para obtener todas las opciones de respuesta de una pregunta
-                function getResponsesArray(questionIndex) {
-                    var responsesArray = [];
-
-                    $('#question' + questionIndex + ' .form-check-label').each(function() {
-                        responsesArray.push($(this).text());
-                    });
-
-                    return responsesArray;
-                }
-
-                // Función para obtener la respuesta correcta de una pregunta
-                function getCorrectAnswerText(questionIndex) {
-                    return $('#question' + questionIndex + ' .form-check-input[value="' + getCorrectAnswerIndex(
-                        questionIndex) + '"]').next().text();
-                }
-
-                // Función para obtener el índice de la respuesta correcta de una pregunta
-                function getCorrectAnswerIndex(questionIndex) {
-                    return $('#question' + questionIndex).data('correct-answer-index');
-                }
-
-                // Restablecer 'startWithoutConfirmation' al cerrar o recargar la página
-                window.onbeforeunload = function() {
-                    localStorage.setItem('startWithoutConfirmation', 'false');
-                };
-
-                // Iniciar el contador si el tiempo se había almacenado previamente y no se hizo clic en "Cancelar"
-                if (storedTime && startWithoutConfirmation && JSON.parse(startWithoutConfirmation)) {
-                    startCountdown(storedTime / 60); // Convertir a minutos
-                    showQuestions(); // Llamar a la función para mostrar las preguntas
-                }
+                listItem.appendChild(radioInput);
+                listItem.appendChild(label);
+                responseList.appendChild(listItem);
             });
-        </script>
 
-    @endauth
+            // Mostrar el contenedor de la pregunta
+            document.getElementById("questionContainer").style.display = "block";
+        }
+
+        // Función para avanzar a la siguiente pregunta
+        function nextQuestion() {
+            var selectedOption = document.querySelector('input[name="responseOption"]:checked');
+
+            if (selectedOption) {
+                var userResponse = {
+                    title: currentQuestion.title,
+                    responses: currentQuestion.responses,
+                    correct_asnwer_text: currentQuestion.correct_asnwer_text,
+                    correct_asnwer_index: parseInt(currentQuestion.correct_asnwer_index),
+                    user_answer_text: currentQuestion.responses[selectedOption.value],
+                    user_anwser_index: parseInt(selectedOption.value),
+
+                };
+                userResponses.push(userResponse);
+            }
+
+            currentQuestionIndex++;
+
+            // Verificar si hay más preguntas
+            if (currentQuestionIndex < randomQuestions.length) {
+                // Mostrar la siguiente pregunta
+                showCurrentQuestion();
+            } else {
+                // Todas las preguntas han sido respondidas, muestra los resultados
+                showResults();
+                axios.post('/admin/submit-test/', {
+                        userResponses: userResponses,
+                        complete_status: 'complete',
+                        id_test_configuration: test_conf,
+                    })
+                    .then(function(response) {
+                        // Manejar la respuesta del servidor si es necesario
+                        console.log(response.data);
+                        window.location.href = "{{ route('voyager.my-courses-view.index') }}";
+                    })
+                    .catch(function(error) {
+                        // Manejar errores si es necesario
+                        console.error(error);
+                    });
+            }
+        }
+
+        // Función para iniciar el temporizador con confirmación
+        function startTimerWithConfirmation() {
+            // Preguntar al usuario si realmente desea empezar
+            var confirmStart = confirm("¿Estás seguro de que deseas comenzar el examen?");
+
+            if (confirmStart) {
+                // Mostrar la primera pregunta
+                showCurrentQuestion();
+
+                // Iniciar el temporizador
+                startTimer();
+            } else {
+                // El usuario canceló, puedes agregar código adicional si es necesario
+            }
+        }
+
+        // Función para mostrar los resultados
+        function showResults() {
+            // Puedes mostrar los resultados de alguna manera, por ejemplo, imprimir en la consola
+            console.log(userResponses);
+
+            // También puedes enviar los resultados al servidor o realizar otras acciones necesarias
+        }
+
+        // Función para iniciar el temporizador
+        function startTimer() {
+            // Mostrar el tiempo restante
+            document.getElementById("timerDisplay").style.display = "block";
+            document.getElementById("startBtn").style.display = "none";
+
+            var timeRemaining = totalMinutes * 60; // Convertir a segundos
+
+            // Actualizar el tiempo restante cada segundo
+            var timerInterval = setInterval(function() {
+                var minutes = Math.floor(timeRemaining / 60);
+                var seconds = timeRemaining % 60;
+
+                // Mostrar el tiempo restante en la interfaz
+                document.getElementById("minutes").textContent = minutes < 10 ? "0" + minutes : minutes;
+                document.getElementById("seconds").textContent = seconds < 10 ? "0" + seconds : seconds;
+
+                // Disminuir el tiempo restante
+                timeRemaining--;
+
+                // Detener el temporizador cuando el tiempo llega a cero
+                if (timeRemaining < 0) {
+                    clearInterval(timerInterval);
+                    alert("¡Tiempo agotado!");
+                    completeUnansweredQuestions();
+
+                    // Mostrar los resultados
+                    showResults();
+
+                    axios.post('/admin/submit-test/', {
+                        userResponses: userResponses,
+                        complete_status: 'partial',
+                        id_test_configuration: test_conf,
+                    })
+                    .then(function(response) {
+                        // Manejar la respuesta del servidor si es necesario
+                        console.log(response.data);
+                    })
+                    .catch(function(error) {
+                        // Manejar errores si es necesario
+                        console.error(error);
+                    });
+
+
+                }
+            }, 1000);
+        }
+
+
+        // Función para completar las preguntas no respondidas
+        function completeUnansweredQuestions() {
+            for (var i = currentQuestionIndex; i < randomQuestions.length; i++) {
+                var unansweredQuestion = randomQuestions[i];
+                var userResponse = {
+                    title: unansweredQuestion.title,
+                    responses: unansweredQuestion.responses,
+                    correct_asnwer_text: unansweredQuestion.correct_asnwer_text,
+                    correct_asnwer_index: parseInt(unansweredQuestion.correct_asnwer_index),
+                    user_answer_text: "none",
+                    user_anwser_index: 9999,
+                };
+                userResponses.push(userResponse);
+            }
+        }
+    </script>
 @endsection
+
+@push('javascript')
+    <!-- Puedes seguir utilizando otros scripts en esta sección si es necesario -->
+@endpush
