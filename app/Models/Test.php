@@ -29,7 +29,7 @@ class Test extends Model
 
     public function configuration()
     {
-        return $this->belongsTo(TestConfiguration::class, 'test_configuration_id');
+        return $this->belongsTo(TestConfiguration::class, 'id_test_configuration');
     }
 
 

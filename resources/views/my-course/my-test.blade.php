@@ -4,10 +4,8 @@
     @auth
         <div class="card">
             <div class="card-body">
-
                 @if (!empty($testConfigurations))
-                    {{-- Display message when there are exams --}}
-                    <p>Hay examenes</p>
+
                     @foreach ($testConfigurations as $exam)
                         @if (!empty($testResults))
                             @php $examHasAnswers = false; @endphp
@@ -21,7 +19,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title">{{ $exam->name }}</h5>
                                             <p class="card-text"><strong>Fecha de realizado: {{ $exam->date }}</strong></p>
-                                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                            <a href="{{ route('my-course.my_score', ['id' => $exam->id]) }}" class="btn btn-warning">Ver</a>
                                         </div>
                                     </div>
                                 @endif
@@ -38,20 +36,23 @@
                                         @if (\Carbon\Carbon::parse($exam->date)->isToday())
                                         <a href="{{ route('my-course.take_test', ['id' => $exam->id]) }}" class="btn btn-primary">Tomar examen</a>
                                         @endif
-
-
-
-
                                     </div>
                                 </div>
                             @endif
                         @else
-                            <p>No hay respuestas</p>
+                            <div class="card">
+                                <div class="card-body">
+                                    <p>No hay respuestas</p>
+                                </div>
+                              </div>
                         @endif
                     @endforeach
                 @else
-                    {{-- Display message when there are no exams --}}
-                    <p>No Hay examenes</p>
+                    <div class="card">
+                        <div class="card-body">
+                            <p>No Hay examenes</p>
+                        </div>
+                      </div>
                 @endif
 
             </div>

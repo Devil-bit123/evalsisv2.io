@@ -231,4 +231,17 @@ class MyCourseViewController extends Controller
         // Retornar la respuesta JSON
         return response()->json($response);
     }
+
+
+    public function my_score($id)
+    {
+        $scored_test = Test::where('id_test_configuration', $id)->first();
+
+        if ($scored_test) {
+            $decoded_responses = json_decode($scored_test->responses, true);
+            return view('my-course.my-score', compact('scored_test', 'decoded_responses'));
+        }
+    }
+
+
 }
