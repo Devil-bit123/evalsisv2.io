@@ -19,6 +19,14 @@
         </div>
     </div>
 
+        <!-- Área para mostrar mensajes de éxito -->
+        <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+
+        <!-- Área para mostrar mensajes de error -->
+        <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+
+
+
     <h2>Edición de Preguntas</h2>
 
     <div id="questionsContainer">
@@ -164,11 +172,26 @@
                     bankDescription
                 }),
                 success: function(response) {
-                    alert('Examen actualizado exitosamente.');
-                    window.location.href = '{{ route('voyager.exams.index') }}';
+                    //alert('Examen actualizado exitosamente.');
+                    // Mostrar mensaje de éxito
+                    $('#successMessage').text(response.message).show();
+                    // Limpiar mensaje de error si lo hubiera
+                    $('#errorMessage').text('');
+                    console.log(response);
+                    // Puedes redirigir a donde sea necesario después de procesar la información.
+                    setTimeout(function() {
+                        // Redirigir después de 1 segundo
+                        window.location.href = '{{ route('voyager.exams.index') }}';
+                    }, 2500);
                 },
                 error: function(error) {
-                    console.error('Error al actualizar el examen:', error);
+                    //console.error('Error al actualizar el examen:', error);
+                    var errorMessage = error.responseJSON && error.responseJSON.error ?
+                        error.responseJSON.error : 'Error desconocido';
+                    $('#errorMessage').text(errorMessage).show();
+                    // Limpiar mensaje de éxito si lo hubiera
+                    $('#successMessage').text('');
+                    console.error(error);
                 }
             });
         }

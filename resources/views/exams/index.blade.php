@@ -3,6 +3,21 @@
 @extends('voyager::master')
 @section('content')
 
+@if(session('success'))
+<div class="alert alert-success" role="alert">
+    {{ session('success') }}
+</div>
+@endif
+
+@if($errors->any())
+<div class="alert alert-danger" role="alert">
+    @foreach($errors->all() as $error)
+    <p>{{ $error }}</p>
+    @endforeach
+</div>
+@endif
+
+
 <div class="row">
     @foreach ($courses as $course)
         <div class="col-md-4 mb-4">
