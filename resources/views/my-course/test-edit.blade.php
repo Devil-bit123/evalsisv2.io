@@ -20,7 +20,7 @@
 
                     <label for="examDropdown" class="form-label">Selecciona tu banco de preguntas</label>
                     <select id="examDropdown" class="form-select" aria-label="Default select example">
-
+                        <option>Selecciona la el banco</option>
                         @foreach ($exams as $exam)
                             <option value="{{ $exam->id }}" data-question-count="{{ count($exam->questions) }}"
                                 {{ $configuration->exam && $configuration->exam->id == $exam->id ? 'selected' : '' }}>
@@ -112,6 +112,20 @@
                     $('#InputAmount').val('');
                 }
             });
+
+
+            $('#InputAmount').on('input', function() {
+                const selectedQuestionCount = parseInt($(this).val());
+                const availableQuestionCount = parseInt($('#questionCountPlaceholder').text());
+
+                if (selectedQuestionCount > availableQuestionCount) {
+                    alert(
+                        'La cantidad de preguntas seleccionadas es mayor que la cantidad disponible en el banco de preguntas.');
+                        $(this).val('');
+                }
+            });
+
+
 
             // Agregar evento de clic al botón "Guardar"
             $('.btn-success').on('click', function() {

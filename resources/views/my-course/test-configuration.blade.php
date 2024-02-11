@@ -115,6 +115,19 @@
                 }
             });
 
+            $('#InputAmount').on('input', function() {
+                const selectedQuestionCount = parseInt($(this).val());
+                const availableQuestionCount = parseInt($('#questionCountPlaceholder').text());
+
+                if (selectedQuestionCount > availableQuestionCount) {
+                    alert(
+                        'La cantidad de preguntas seleccionadas es mayor que la cantidad disponible en el banco de preguntas.');
+                        $(this).val('');
+                }
+            });
+
+
+
 
             // Agregar evento de clic al botón "Guardar"
             $('.btn-success').on('click', function() {
@@ -150,7 +163,8 @@
                         // Manejar la respuesta del servidor si es necesario
                         console.log(response);
                         alert('Datos guardados exitosamente.');
-                        window.location.href = '{{ route('my-course.dashboard',['id'=>$exam->id_course])}}';
+                        window.location.href =
+                            '{{ route('my-course.dashboard', ['id' => $exam->id_course]) }}';
                     },
                     error: function(error) {
                         // Manejar errores si es necesario
