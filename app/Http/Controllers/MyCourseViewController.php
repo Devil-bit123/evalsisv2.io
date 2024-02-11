@@ -90,10 +90,12 @@ class MyCourseViewController extends Controller
                 //dd($exams);
                 return view('my-course.test-edit', compact('exams', 'configuration', 'user', 'course'));
             } else {
-                dd("No se encontró el examen asociado a la configuración de prueba.");
+
+                return response()->json(['No se encontró el examen asociado a la configuración de prueba.'], 200);
             }
         } else {
-            dd("No se encontró la configuración de prueba con el ID proporcionado.");
+
+            return response()->json(['No se encontró la configuración de prueba con el ID proporcionado.'], 200);
         }
     }
 
@@ -106,7 +108,18 @@ class MyCourseViewController extends Controller
             'selectedDate' => 'required|date',
             'questionAmount' => 'required|integer|min:1',
             'testDuration' => 'required|string',
+        ], [
+            'testName.required' => 'El nombre del test es obligatorio.',
+            'examId.required' => 'Por favor selecciona un banco de preguntas.',
+            'examId.exists' => 'El banco de preguntas seleccionado no es válido.',
+            'selectedDate.required' => 'La fecha del test es obligatoria.',
+            'selectedDate.date' => 'La fecha del test debe ser una fecha válida.',
+            'questionAmount.required' => 'La cantidad de preguntas es obligatoria.',
+            'questionAmount.integer' => 'La cantidad de preguntas debe ser un número entero.',
+            'questionAmount.min' => 'La cantidad de preguntas debe ser al menos :min.',
+            'testDuration.required' => 'La duración del test es obligatoria.',
         ]);
+
 
         // Encuentra la configuración de prueba por su ID
         $configuration_update = TestConfiguration::find($id);
@@ -139,7 +152,7 @@ class MyCourseViewController extends Controller
             $course = $exam->course;
 
             // Aquí puedes devolver una respuesta JSON con la información necesaria
-            return response()->json(['success' => true, 'user' => Auth::user(), 'course' => $course]);
+            return response()->json(['message' => 'El Test se edito correctamente', 'user' => Auth::user(), 'course' => $course]);
         } else {
             return response()->json(['error' => 'No se encontró el examen asociado a la configuración de prueba.'], 404);
         }
@@ -157,7 +170,8 @@ class MyCourseViewController extends Controller
         $user = Auth::user();
         //$course = Course::find($id);
 
-        return view('my-course.dashboard', compact('user', 'course'));
+        return view('my-course.dashboard', compact('user', 'course'))->with('message', 'Test eliminado correctamente.');
+
     }
 
 
@@ -180,11 +194,7 @@ class MyCourseViewController extends Controller
             // Add the current test result to the array
             $testResults[] = $response;
         }
-
-
         //dd($testResults);
-
-
 
         return view('my-course.my-test', compact('testConfigurations', 'user','testResults'));
     }

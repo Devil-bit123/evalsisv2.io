@@ -14,6 +14,13 @@
 
                     <h2>Configuracion de test</h2>
 
+                    <!-- Área para mostrar mensajes de éxito -->
+                    <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+
+                    <!-- Área para mostrar mensajes de error -->
+                    <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+
+
                     <div class="input-group mb-3">
                         <label for="formGroupExampleInput" class="form-label">Ingresa el nombre de tu test</label>
                         <input type="text" id="InputName" class="form-control" aria-label="Username"
@@ -120,14 +127,19 @@
                 const availableQuestionCount = parseInt($('#questionCountPlaceholder').text());
 
                 if (selectedQuestionCount > availableQuestionCount) {
-                    alert(
-                        'La cantidad de preguntas seleccionadas es mayor que la cantidad disponible en el banco de preguntas.');
-                        $(this).val('');
+                    $('#errorMessage').text(
+                        'La cantidad de preguntas seleccionadas es mayor que la cantidad disponible en el banco de preguntas.'
+                        ).show();
+                    // Limpiar mensaje de éxito si lo hubiera
+                    $('#successMessage').text('');
+                    $('#InputAmount').val('');
+
+                    // Desaparecer el contenedor de error después de 2.5 segundos
+                    setTimeout(function() {
+                        $('#errorMessage').hide();
+                    }, 2500);
                 }
             });
-
-
-
 
             // Agregar evento de clic al botón "Guardar"
             $('.btn-success').on('click', function() {
@@ -160,16 +172,29 @@
                         testDuration: testDuration
                     },
                     success: function(response) {
-                        // Manejar la respuesta del servidor si es necesario
+                        // Mostrar mensaje de éxito
+                        $('#successMessage').text(response.message).show();
+                        // Limpiar mensaje de error si lo hubiera
+                        $('#errorMessage').text('');
                         console.log(response);
-                        alert('Datos guardados exitosamente.');
-                        window.location.href =
-                            '{{ route('my-course.dashboard', ['id' => $exam->id_course]) }}';
+                        // Puedes redirigir a donde sea necesario después de procesar la información.
+                        setTimeout(function() {
+                            // Redirigir después de 1 segundo
+                            window.location.href =
+                                '{{ route('my-course.dashboard', ['id' => $exam->id_course]) }}';
+                        }, 2500);
+
                     },
                     error: function(error) {
                         // Manejar errores si es necesario
+                        // console.error(error);
+                        // alert('Hubo un error al guardar los datos.');
+                        $('#errorMessage').text(error).show();
+                        // Limpiar mensaje de éxito si lo hubiera
+                        $('#successMessage').text('');
                         console.error(error);
-                        alert('Hubo un error al guardar los datos.');
+
+
                     }
                 });
             });

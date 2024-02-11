@@ -12,6 +12,13 @@
                 <div class="mb-3">
                     <h2>Configuracion de test</h2>
 
+
+                    <!-- Área para mostrar mensajes de éxito -->
+                    <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+
+                    <!-- Área para mostrar mensajes de error -->
+                    <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+
                     <div class="input-group mb-3">
                         <label for="InputName" class="form-label">Ingresa el nombre de tu test</label>
                         <input type="text" id="InputName" class="form-control" value="{{ $configuration->name }}"
@@ -40,8 +47,9 @@
 
                 <div class="input-group mb-3">
                     <label for="InputAmount" class="form-label">Selecciona la cantidad de preguntas de tu test
-                        <strong>(cantidad de preguntas del banco seleccionado: <span id="questionCountPlaceholder">{{ count($configuration->exam->questions) ?? 'N/A' }}</span>)</strong>
-</label>
+                        <strong>(cantidad de preguntas del banco seleccionado: <span
+                                id="questionCountPlaceholder">{{ count($configuration->exam->questions) ?? 'N/A' }}</span>)</strong>
+                    </label>
                     <input type="number" id="InputAmount" class="form-control" value="{{ $configuration->number_questions }}"
                         aria-label="Username" aria-describedby="basic-addon1" disabled>
                 </div>
@@ -62,7 +70,7 @@
 
 @section('javascript')
 
-<script>
+    <script>
         $(document).ready(function() {
 
             // Función para obtener la fecha actual en formato YYYY-MM-DD
@@ -119,9 +127,15 @@
                 const availableQuestionCount = parseInt($('#questionCountPlaceholder').text());
 
                 if (selectedQuestionCount > availableQuestionCount) {
-                    alert(
-                        'La cantidad de preguntas seleccionadas es mayor que la cantidad disponible en el banco de preguntas.');
-                        $(this).val('');
+                    $('#errorMessage').text(
+                        'La cantidad de preguntas seleccionadas es mayor que la cantidad disponible en el banco de preguntas.'
+                        ).show();
+                        $('#InputAmount').val('');
+                    // Ocultar el mensaje después de 2.5 segundos
+                    setTimeout(function() {
+                        $('#errorMessage').hide();
+
+                    }, 2500);
                 }
             });
 
@@ -137,10 +151,10 @@
                 const testDuration = $('#InputDuration').val();
 
                 // Validar que todos los campos requeridos estén llenos
-                if (!testName || !examId || !selectedDate || !questionAmount || !testDuration) {
-                    alert('Por favor, complete todos los campos antes de guardar.');
-                    return;
-                }
+                //if (!testName || !examId || !selectedDate || !questionAmount || !testDuration) {
+                //   alert('Por favor, complete todos los campos antes de guardar.');
+                //    return;
+                //}
 
                 // Obtener el ID de la configuración de prueba
                 const configurationId = '{{ $configuration->id }}';
@@ -158,14 +172,88 @@
                     },
                     success: function(response) {
                         // Manejar la respuesta del servidor si es necesario
+                        //console.log(response);
+                        //alert('Datos guardados exitosamente.');
+                        // window.location.href = '{{ route('my-course.dashboard', ['id' => $course->id]) }}';
+
+                        // Mostrar mensaje de éxito
+                        $('#successMessage').text(response.message).show();
+                        // Limpiar mensaje de error si lo hubiera
+                        $('#errorMessage').text('');
                         console.log(response);
-                        alert('Datos guardados exitosamente.');
-                        window.location.href = '{{ route('my-course.dashboard',['id'=>$course->id])}}';
+                        // Puedes redirigir a donde sea necesario después de procesar la información.
+                        setTimeout(function() {
+                            // Redirigir después de 1 segundo
+                            window.location.href =
+                                '{{ route('my-course.dashboard', ['id' => $course->id]) }}';
+
+                        }, 2500);
+
+
                     },
                     error: function(error) {
                         // Manejar errores si es necesario
+                        //console.error(error);
+                        // alert('Hubo un error al guardar los datos.');
+
+                        //$('#errorMessage').text(JSON.stringify(error)).show();
+                        // Limpiar mensaje de éxito si lo hubiera
+                        //$('#successMessage').text('');
+                        //console.error(error);
+
+                        // Manejar errores si es necesario
+                        var errors = JSON.parse(error.responseText).errors;
+
+                        // Mostrar mensaje de error para el nombre del test
+                        if (errors.testName) {
+                            $('#errorMessage').append('<p>' + errors.testName[0] + '</p>')
+                                .show();
+                            // Ocultar el mensaje después de 2.5 segundos
+                            setTimeout(function() {
+                                $('#errorMessage').hide().empty();
+                            }, 2500);
+                        }
+                        // Mostrar mensaje de error para el nombre del test
+                        if (errors.examId) {
+                            $('#errorMessage').append('<p>' + errors.examId[0] + '</p>')
+                                .show();
+                            // Ocultar el mensaje después de 2.5 segundos
+                            setTimeout(function() {
+                                $('#errorMessage').hide().empty();
+                            }, 2500);
+                        }
+                        // Mostrar mensaje de error para el nombre del test
+                        if (errors.selectedDate) {
+                            $('#errorMessage').append('<p>' + errors.selectedDate[0] + '</p>')
+                                .show();
+                            // Ocultar el mensaje después de 2.5 segundos
+                            setTimeout(function() {
+                                $('#errorMessage').hide().empty();
+                            }, 2500);
+                        }
+                        // Mostrar mensaje de error para el nombre del test
+                        if (errors.questionAmount) {
+                            $('#errorMessage').append('<p>' + errors.questionAmount[0] + '</p>')
+                                .show();
+                            // Ocultar el mensaje después de 2.5 segundos
+                            setTimeout(function() {
+                                $('#errorMessage').hide().empty();
+                            }, 2500);
+                        }
+                        // Mostrar mensaje de error para el nombre del test
+                        if (errors.testDuration) {
+                            $('#errorMessage').append('<p>' + errors.testDuration[0] + '</p>')
+                                .show();
+                            // Ocultar el mensaje después de 2.5 segundos
+                            setTimeout(function() {
+                                $('#errorMessage').hide().empty();
+                            }, 2500);
+                        }
+                        // Limpiar mensaje de éxito si lo hubiera
+                        $('#successMessage').text('');
                         console.error(error);
-                        alert('Hubo un error al guardar los datos.');
+
+
                     }
                 });
             });
