@@ -2,40 +2,45 @@
 
 @section('content')
 
-    @auth
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
-        <div class="card">
-            <div class="card-body">
-                <div class="mb-3">
 
-                    <h2>Configuracion de test</h2>
+    <div class="card">
+        <div class="card-body">
+            <div class="mb-3">
 
-                    <!-- Área para mostrar mensajes de éxito -->
-                    <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+                <h2>Configuracion de test</h2>
 
-                    <!-- Área para mostrar mensajes de error -->
-                    <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
-
-
-                    <div class="input-group mb-3">
-                        <label for="formGroupExampleInput" class="form-label">Ingresa el nombre de tu test</label>
-                        <input type="text" id="InputName" class="form-control" aria-label="Username"
-                            aria-describedby="basic-addon1">
-                    </div>
+                @if ($exams->isEmpty())
+                    <p>No tiene un banco de preguntas para esta Clase</p>
+                @else
+                    @auth
 
 
-                    <label for="formGroupExampleInput" class="form-label">Selecciona tu banco de preguntas</label>
-                    <select id="examDropdown" class="form-select" aria-label="Default select example">
-                        <option selected>Open this select menu</option>
-                        @foreach ($exams as $exam)
-                            <option value="{{ $exam->id }}" data-question-count="{{ count($exam->questions) }}">
-                                {{ $exam->name }}</option>
-                        @endforeach
-                    </select>
+                        <!-- Área para mostrar mensajes de éxito -->
+                        <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+
+                        <!-- Área para mostrar mensajes de error -->
+                        <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+
+
+                        <div class="input-group mb-3">
+                            <label for="formGroupExampleInput" class="form-label">Ingresa el nombre de tu test</label>
+                            <input type="text" id="InputName" class="form-control" aria-label="Username"
+                                aria-describedby="basic-addon1">
+                        </div>
+
+
+                        <label for="formGroupExampleInput" class="form-label">Selecciona tu banco de preguntas</label>
+                        <select id="examDropdown" class="form-select" aria-label="Default select example">
+                            <option selected>Open this select menu</option>
+                            @foreach ($exams as $exam)
+                                <option value="{{ $exam->id }}" data-question-count="{{ count($exam->questions) }}">
+                                    {{ $exam->name }}</option>
+                            @endforeach
+                        </select>
 
                 </div>
 
@@ -67,9 +72,7 @@
 
     @endauth
 
-@endsection
 
-@section('javascript')
 
     <script>
         $(document).ready(function() {
@@ -129,7 +132,7 @@
                 if (selectedQuestionCount > availableQuestionCount) {
                     $('#errorMessage').text(
                         'La cantidad de preguntas seleccionadas es mayor que la cantidad disponible en el banco de preguntas.'
-                        ).show();
+                    ).show();
                     // Limpiar mensaje de éxito si lo hubiera
                     $('#successMessage').text('');
                     $('#InputAmount').val('');
@@ -150,7 +153,7 @@
                 const questionAmount = $('#InputAmount').val();
                 const testDuration = $('#InputDuration').val();
 
-                //const courseId = {{ $exam->id_course }};
+
 
 
                 // Validar que todos los campos requeridos estén llenos
@@ -201,6 +204,8 @@
 
         });
     </script>
+    @endif
 
 
-@stop
+
+@endsection
