@@ -17,6 +17,12 @@
                 </div>
             @endif
 
+            <!-- Área para mostrar mensajes de éxito -->
+            <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+
+            <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+
+
             @if (session('error'))
                 <div class="alert alert-danger">
                     {{ session('error') }}
@@ -38,7 +44,7 @@
                                     class="btn btn-warning">Editar</a>
                             @endif
                             @if ($user->role->name == 'admin')
-                                <a href="{{ route('courses.addTeacher', ['course' => $course->id,'id' => $user->id]) }}"
+                                <a href="{{ route('courses.addTeacher', ['course' => $course->id, 'id' => $user->id]) }}"
                                     class="btn btn-warning">Agregar Maestro</a>
                                 <a href="{{ route('courses.delete', ['id' => $course->id]) }}"
                                     class="btn btn-danger">Eliminar</a>
@@ -140,26 +146,25 @@
                         },
                         success: function(response) {
                             if (response.success) {
-                                alert('Matriculado exitosamente.');
+                                // alert('Matriculado exitosamente.');
                                 // Puedes redirigir o realizar otras acciones después del éxito.
-                            } else {
-                                alert('Error al matricularse: ' + response.message);
+
+                                // Mostrar mensaje de éxito
+                                $('#successMessage').text(response.success).show();
+                                // Limpiar mensaje de error si lo hubiera
+                                $('#errorMessage').text('');
+                                console.log(response);
+
                             }
                         },
                         error: function(xhr, status, error) {
-                            var errorMessage;
-                            try {
-                                // Intenta parsear el JSON para obtener el mensaje específico
-                                var responseJson = JSON.parse(xhr.responseText);
-                                errorMessage = responseJson.message || 'Error desconocido';
-                            } catch (e) {
-                                errorMessage = 'Error desconocido';
-                            }
 
-                            console.error('Error al intentar matricularse:', xhr, status,
-                                error);
-                            alert('Hubo un error al intentar matricularte. Detalles: ' +
-                                errorMessage);
+                            $('#errorMessage').text(xhr.responseJSON.message).show();
+                            // Limpiar mensaje de éxito si lo hubiera
+                            $('#successMessage').text('');
+                            console.error(error);
+
+
                         }
                     });
                 }
@@ -185,26 +190,22 @@
                         },
                         success: function(response) {
                             if (response.success) {
-                                alert('Inscrito como maestro exitosamente.');
-                                // Puedes redirigir o realizar otras acciones después del éxito.
-                            } else {
-                                alert('Error al inscribirse como maestro: ' + response.message);
+
+                                // Mostrar mensaje de éxito
+                                $('#successMessage').text(response.success).show();
+                                // Limpiar mensaje de error si lo hubiera
+                                $('#errorMessage').text('');
+                                //console.log(response);
+
                             }
                         },
                         error: function(xhr, status, error) {
-                            var errorMessage;
-                            try {
-                                // Intenta parsear el JSON para obtener el mensaje específico
-                                var responseJson = JSON.parse(xhr.responseText);
-                                errorMessage = responseJson.message || 'Error desconocido';
-                            } catch (e) {
-                                errorMessage = 'Error desconocido';
-                            }
 
-                            console.error('Error al intentar inscribirse como maestro:', xhr,
-                                status, error);
-                            alert('Hubo un error al intentar inscribirse como maestro. Detalles: ' +
-                                errorMessage);
+                            $('#errorMessage').text(xhr.responseJSON.message).show();
+                            // Limpiar mensaje de éxito si lo hubiera
+                            $('#successMessage').text('');
+                            //console.error(error);
+
                         }
                     });
                 }
