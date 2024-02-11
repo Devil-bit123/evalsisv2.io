@@ -9,9 +9,16 @@
                 id="countdown">{{ $test_configuration->time }}</span> minutos para resolver el examen</p>
 
 
-                 <!-- Agrega este bloque para mostrar el tiempo restante -->
+        <!-- Área para mostrar mensajes de éxito -->
+        <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+
+        <!-- Área para mostrar mensajes de error -->
+        <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+
+
+        <!-- Agrega este bloque para mostrar el tiempo restante -->
         <div id="timerDisplay" style="display: none;">
-          <h5>Tiempo restante: <span id="minutes">00</span>:<span id="seconds">00</span></h5>
+            <h5>Tiempo restante: <span id="minutes">00</span>:<span id="seconds">00</span></h5>
         </div>
 
 
@@ -34,11 +41,10 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
-
         var test_conf = {{ $test_configuration->id }};
         // Obtén las preguntas desde la variable de PHP y conviértelas a formato JavaScript
         var randomQuestions = @json($random_questions);
-        console.log(randomQuestions);
+        //console.log(randomQuestions);
 
         // Otras variables necesarias
         var currentQuestionIndex = 0; // Índice de la pregunta actual
@@ -83,6 +89,11 @@
         function nextQuestion() {
             var selectedOption = document.querySelector('input[name="responseOption"]:checked');
 
+            if (selectedOption === null) {
+                alert("Por favor, selecciona una respuesta antes de continuar.");
+                return; // Detiene la ejecución de la función si no hay una respuesta seleccionada
+            }
+
             if (selectedOption) {
                 var userResponse = {
                     title: currentQuestion.title,
@@ -112,12 +123,26 @@
                     })
                     .then(function(response) {
                         // Manejar la respuesta del servidor si es necesario
-                        console.log(response.data);
-                        window.location.href = "{{ route('voyager.my-courses-view.index') }}";
+                        //console.log(response.data);
+                        //window.location.href = "{{ route('voyager.my-courses-view.index') }}";
+
+                        // Mostrar mensaje de éxito
+                        $('#successMessage').text(response.data.success).show();
+                        // Limpiar mensaje de error si lo hubiera
+                        $('#errorMessage').text('');
+                        //console.log(response);
+                        // Puedes redirigir a donde sea necesario después de procesar la información.
+                        setTimeout(function() {
+                            // Redirigir después de 1 segundo
+
+                            window.location.href = "{{ route('voyager.my-courses-view.index') }}";
+
+                        }, 2500);
+
                     })
                     .catch(function(error) {
                         // Manejar errores si es necesario
-                        console.error(error);
+                        //console.error(error);
                     });
             }
         }
@@ -141,7 +166,7 @@
         // Función para mostrar los resultados
         function showResults() {
             // Puedes mostrar los resultados de alguna manera, por ejemplo, imprimir en la consola
-            console.log(userResponses);
+            //console.log(userResponses);
 
             // También puedes enviar los resultados al servidor o realizar otras acciones necesarias
         }
@@ -176,24 +201,30 @@
                     showResults();
 
                     axios.post('/admin/submit-test/', {
-                        userResponses: userResponses,
-                        complete_status: 'partial',
-                        id_test_configuration: test_conf,
-                    })
-                    .then(function(response) {
-                        // Manejar la respuesta del servidor si es necesario
-                        console.log(response.data);
-                    })
-                    .catch(function(error) {
-                        // Manejar errores si es necesario
-                        console.error(error);
-                    });
+                            userResponses: userResponses,
+                            complete_status: 'partial',
+                            id_test_configuration: test_conf,
+                        })
+                        .then(function(response) {
+                            // Manejar la respuesta del servidor si es necesario
+                            //console.log(response.data);
+
+                            // Mostrar mensaje de éxito
+                            $('#successMessage').text(response.success).show();
+                            // Limpiar mensaje de error si lo hubiera
+                            $('#errorMessage').text('');
+                            //console.log(response);
+
+                        })
+                        .catch(function(error) {
+                            // Manejar errores si es necesario
+                            //console.error(error);
+                        });
 
 
                 }
             }, 1000);
         }
-
 
         // Función para completar las preguntas no respondidas
         function completeUnansweredQuestions() {

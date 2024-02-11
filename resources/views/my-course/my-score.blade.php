@@ -2,10 +2,12 @@
 
 @section('content')
 
+<div class="container" style="background-color: white">
+
 @auth
 <div class="card">
     <div class="card-body">
-        <h2>Respuestas corregidas del examen: {{ $scored_test->configuration->name }}</h2>
+        <h2>Respuestas corregidas de: "{{ $scored_test->configuration->name }}"</h2>
     </div>
 </div>
 
@@ -51,4 +53,7 @@
 </div>
 
 @endauth
+
+</div>
+
 @endsection

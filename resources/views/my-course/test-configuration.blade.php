@@ -176,7 +176,7 @@
                         $('#successMessage').text(response.message).show();
                         // Limpiar mensaje de error si lo hubiera
                         $('#errorMessage').text('');
-                        console.log(response);
+                        //console.log(response);
                         // Puedes redirigir a donde sea necesario después de procesar la información.
                         setTimeout(function() {
                             // Redirigir después de 1 segundo
@@ -192,7 +192,7 @@
                         $('#errorMessage').text(error).show();
                         // Limpiar mensaje de éxito si lo hubiera
                         $('#successMessage').text('');
-                        console.error(error);
+                        //console.error(error);
 
 
                     }

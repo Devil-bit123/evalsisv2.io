@@ -97,10 +97,10 @@
                         },
                         success: function(data) {
                             // Manejar la respuesta del servidor (puede ser redireccionar, actualizar la interfaz, etc.).
-                            console.log(data);
+                            //console.log(data);
                         },
                         error: function(error) {
-                            console.log(error);
+                            //console.log(error);
                         }
                     });
 
@@ -153,7 +153,7 @@
                                 $('#successMessage').text(response.success).show();
                                 // Limpiar mensaje de error si lo hubiera
                                 $('#errorMessage').text('');
-                                console.log(response);
+                                //console.log(response);
 
                             }
                         },
@@ -162,7 +162,7 @@
                             $('#errorMessage').text(xhr.responseJSON.message).show();
                             // Limpiar mensaje de éxito si lo hubiera
                             $('#successMessage').text('');
-                            console.error(error);
+                            //console.error(error);
 
 
                         }
