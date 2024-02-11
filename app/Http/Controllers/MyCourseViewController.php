@@ -235,7 +235,7 @@ class MyCourseViewController extends Controller
         // Crear una respuesta JSON con la URL de redirección y cualquier otro dato que desees enviar
         $response = [
             'redirect_url' => route('my-course.dashboard', ['id' => $course->id]),
-            'message' => 'Test submitted successfully.', // O cualquier otro mensaje que desees enviar
+            'success' => 'El test se a enviado y sera calificado automaticamente.', // O cualquier otro mensaje que desees enviar
         ];
 
         // Retornar la respuesta JSON
