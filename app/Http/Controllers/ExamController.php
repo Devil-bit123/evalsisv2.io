@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Exam;
 use App\Models\Course;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\QueryException;
@@ -30,28 +31,31 @@ class ExamController extends Controller
 
     public function storeExam(Request $request, Course $course)
     {
+        try {
+            $request->validate([
+                'bankName' => 'required|string|max:255',
+                'bankDescription' => 'required|string|max:255',
+                'questions' => 'required|array|min:1',
+                'questions.*.title' => 'required|string|max:255',
+                'questions.*.responses' => 'required|array|min:2',
+                'questions.*.responses.*' => 'required|string|max:255',
+                'questions.*.correct_asnwer_index' => 'required|int|min:0',
+                'questions.*.correct_asnwer_text' => 'required|string',
+            ]);
 
-        $request->validate([
-            'bankName' => 'required|string|max:255',
-            'bankDescription' => 'required|string|max:255',
-            'questions' => 'required|array|min:1', // al menos una pregunta
-            'questions.*.title' => 'required|string|max:255',
-            'questions.*.responses' => 'required|array|min:2', // al menos dos respuestas
-            'questions.*.responses.*' => 'required|string|max:255',
-            'questions.*.correct_asnwer_index' => 'required|int|min:0', // Asegúrate de que sea un índice válido
-            'questions.*.correct_asnwer_text' => 'required|string',
-        ]);
+            $exam = Exam::create([
+                'id_course' => $course->id,
+                'name' => $request->input('bankName'),
+                'description' => $request->input('bankDescription'),
+                'questions' => $request->input('questions'),
+            ]);
 
-        $exam = Exam::create([
-            'id_course' => $course->id,
-            'name' => $request->input('bankName'),
-            'description' => $request->input('bankDescription'),
-            'questions' => $request->input('questions'),
-        ]);
-
-        $courses = Course::all();
-
-        return view('exams.index', compact('courses'));
+            $courses = Course::all();
+            return response()->json(['message' => 'Banco de preguntas Agregado.'], 200);
+            //return view('exams.index', compact('courses'))->with('success', 'Banco de preguntas agregado correctamente');
+        } catch (Exception $e) {
+            return back()->withErrors(['error' => 'Ha ocurrido un error al procesar la solicitud.']);
+        }
     }
 
 
@@ -94,7 +98,8 @@ class ExamController extends Controller
         $exam->questions = $request->questions;
         $exam->save();
 
-       // return redirect()->route('exams.index')->with('success', 'Examen actualizado exitosamente.');
+        // Devolver un objeto JSON con la clave 'message'
+        return response()->json(['message' => 'Banco de preguntas Actualizado.'], 200);
     }
 
 
@@ -107,7 +112,7 @@ class ExamController extends Controller
         $exam->delete();
 
         // Redirect back or to a specific page after deletion
-        return redirect()->route('exams.index')->with('success', 'Exam deleted successfully');
+        return redirect()->route('voyager.exams.index')->with('success', 'Banco de preguntas eliminado con exito');
     }
 
 
