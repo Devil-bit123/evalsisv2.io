@@ -27,15 +27,15 @@
 
                     <label for="examDropdown" class="form-label">Selecciona tu banco de preguntas</label>
                     <select id="examDropdown" class="form-select" aria-label="Default select example">
-                        <option>Selecciona la el banco</option>
+                        <option selected>Selecciona la el banco</option>
                         @foreach ($exams as $exam)
                             <option value="{{ $exam->id }}" data-question-count="{{ count($exam->questions) }}"
-                                {{ $configuration->exam && $configuration->exam->id == $exam->id ? 'selected' : '' }}>
+                                {{ $configuration->exam && $configuration->exam->id == $exam->id  }}>
                                 {{ $exam->name }}
                             </option>
                         @endforeach
-
                     </select>
+
 
                 </div>
 
@@ -48,7 +48,7 @@
                 <div class="input-group mb-3">
                     <label for="InputAmount" class="form-label">Selecciona la cantidad de preguntas de tu test
                         <strong>(cantidad de preguntas del banco seleccionado: <span
-                                id="questionCountPlaceholder">{{ count($configuration->exam->questions) ?? 'N/A' }}</span>)</strong>
+                                id="questionCountPlaceholder">{{--  --}}</span>)</strong>
                     </label>
                     <input type="number" id="InputAmount" class="form-control" value="{{ $configuration->number_questions }}"
                         aria-label="Username" aria-describedby="basic-addon1" disabled>
