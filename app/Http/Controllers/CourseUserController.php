@@ -30,16 +30,16 @@ class CourseUserController extends Controller
         try {
             // Verificar si el usuario ya es docente en el curso
             if ($course->users()->where('user_id', $request->user_id)->wherePivot('role', 'docente')->exists()) {
-                return response()->json(['success' => false, 'message' => 'El usuario ya es docente en este curso.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+                return response()->json(['message' => 'El usuario ya es docente en este curso.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
             }
 
             // Asocia el usuario seleccionado como docente al curso
             $course->users()->attach($request->user_id, ['role' => 'docente']);
 
-            return response()->json(['success' => true, 'message' => 'Usuario agregado como docente correctamente.']);
+            return response()->json(['success' => 'Usuario agregado como docente correctamente.']);
         } catch (\Exception $e) {
             // Si hay una excepción no controlada, devuelve un mensaje de error genérico
-            return response()->json(['success' => false, 'message' => 'Error al procesar la solicitud.'], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['message' => 'Error al procesar la solicitud.'], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -65,18 +65,18 @@ class CourseUserController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['success' => false, 'message' => 'Usuario no encontrado.'], 404);
+            return response()->json(['message' => 'Usuario no encontrado.'], 404);
         }
 
         // Verificar si el usuario ya está matriculado en el curso
         if ($course->users->contains($user)) {
-            return response()->json(['success' => false, 'message' => 'El usuario ya está matriculado en este curso.'], 422);
+            return response()->json(['message' => 'El usuario ya está matriculado en este curso.'], 422);
         }
 
         // Asociar el usuario seleccionado como estudiante al curso
         $course->users()->attach($id, ['role' => 'alumno']);
 
-        return response()->json(['success' => true, 'message' => 'Usuario matriculado exitosamente.']);
+        return response()->json(['success' => 'Usuario matriculado exitosamente.']);
     }
 
 
