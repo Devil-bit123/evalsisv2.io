@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\TestConfiguration;
 use Illuminate\Support\Facades\Auth;
+use App\Events\TestConfigurationCreated;
 
 class MyCourseViewController extends Controller
 {
@@ -57,6 +58,9 @@ class MyCourseViewController extends Controller
         ]);
 
         $configuration->save();
+        // Después de guardar la configuración de la prueba
+        event(new TestConfigurationCreated($configuration));
+
         return response()->json(['message' => 'Datos guardados exitosamente'], 200);
     }
 
@@ -171,7 +175,6 @@ class MyCourseViewController extends Controller
         //$course = Course::find($id);
 
         return view('my-course.dashboard', compact('user', 'course'))->with('message', 'Test eliminado correctamente.');
-
     }
 
 
@@ -190,14 +193,14 @@ class MyCourseViewController extends Controller
 
         foreach ($testConfigurations as $e) {
             $response = Test::where('id_test_configuration', '=', $e->id)
-            ->where('id_user','=',$user->id)->first();
+                ->where('id_user', '=', $user->id)->first();
 
             // Add the current test result to the array
             $testResults[] = $response;
         }
         //dd($testResults);
 
-        return view('my-course.my-test', compact('testConfigurations', 'user','testResults'));
+        return view('my-course.my-test', compact('testConfigurations', 'user', 'testResults'));
     }
 
 
@@ -253,6 +256,4 @@ class MyCourseViewController extends Controller
             return view('my-course.my-score', compact('scored_test', 'decoded_responses'));
         }
     }
-
-
 }
