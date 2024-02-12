@@ -189,7 +189,8 @@ class MyCourseViewController extends Controller
         $testResults = []; // Initialize an array to store test results
 
         foreach ($testConfigurations as $e) {
-            $response = Test::where('id_test_configuration', '=', $e->id)->first();
+            $response = Test::where('id_test_configuration', '=', $e->id)
+            ->where('id_user','=',$user->id)->first();
 
             // Add the current test result to the array
             $testResults[] = $response;
