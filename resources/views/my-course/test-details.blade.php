@@ -15,7 +15,7 @@
     </div>
     <div class="card-body">
       <h5 class="card-title">{{ $configuration['name'] }}</h5>
-      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+      <p class="card-text">Fecha:  {{ $configuration['date'] }}</p>
       <a href="{{ route('my-course.test_configuration_edit',['id'=>$configuration['id']]) }}" class="btn btn-primary">Editar</a>
       <form action="{{ route('my-course.test_configuration_delete', ['id' => $configuration['id']]) }}" method="POST">
         @csrf
