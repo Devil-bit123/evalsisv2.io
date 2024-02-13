@@ -50,13 +50,44 @@
                                     class="btn btn-danger">Eliminar</a>
                             @endif
                             @if ($user->role->name == 'alumno')
-                                <a href="#" class="btn btn-danger matricularse-btn"
-                                    data-course-id="{{ $course->id }}"
-                                    data-user-id="{{ $user->id }}">Matricularse</a>
+                                @php
+                                    $showDictarButton = false;
+                                @endphp
+
+                                @foreach ($switchs as $switch)
+                                    @if ($switch->name === 'Matriculation' && $switch->status === 1)
+                                        @php
+                                            $showDictarButton = true;
+                                            break;
+                                        @endphp
+                                    @endif
+                                @endforeach
+
+                                @if ($showDictarButton)
+                                    <a href="#" class="btn btn-danger matricularse-btn"
+                                        data-course-id="{{ $course->id }}"
+                                        data-user-id="{{ $user->id }}">Matricularse</a>
+                                @endif
                             @endif
+
                             @if ($user->role->name == 'docente')
-                                <a href="#" class="btn btn-danger dictar-btn" data-course-id="{{ $course->id }}"
-                                    data-user-id="{{ $user->id }}">Dictar</a>
+                                @php
+                                    $showDictarButton = false;
+                                @endphp
+
+                                @foreach ($switchs as $switch)
+                                    @if ($switch->name === 'Inscription' && $switch->status === 1)
+                                        @php
+                                            $showDictarButton = true;
+                                            break;
+                                        @endphp
+                                    @endif
+                                @endforeach
+
+                                @if ($showDictarButton)
+                                    <a href="#" class="btn btn-danger dictar-btn"
+                                        data-course-id="{{ $course->id }}" data-user-id="{{ $user->id }}">Dictar</a>
+                                @endif
                             @endif
                         </div>
                     </div>

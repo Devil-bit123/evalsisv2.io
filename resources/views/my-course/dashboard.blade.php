@@ -83,8 +83,7 @@
                                     </div>
                                     <div class="card-body">
                                         <h5 class="card-title">Proximas tareas</h5>
-                                        <p class="card-text">With supporting text below as a natural lead-in to additional
-                                            content.</p>
+                                        <p class="card-text">Aquí encontraras todas las Tareas de tu curso</p>
                                         <a href="#" class="btn btn-primary">Go somewhere</a>
                                     </div>
                                 </div>
@@ -97,9 +96,8 @@
 
                                     </div>
                                     <div class="card-body">
-                                        <h5 class="card-title">Proximos examenes</h5>
-                                        <p class="card-text">With supporting text below as a natural lead-in to additional
-                                            content.</p>
+                                        <h5 class="card-title">Proximos tests</h5>
+                                        <p class="card-text">Aquí encontraras todos los Tests de tu curso</p>
                                         <a href="{{ route('my-course.test_view', ['id' => $course->id]) }}"
                                             class="btn btn-primary">Ir a examanes</a>
                                     </div>
@@ -114,8 +112,7 @@
                                     </div>
                                     <div class="card-body">
                                         <h5 class="card-title">Planificacion del curso</h5>
-                                        <p class="card-text">With supporting text below as a natural lead-in to additional
-                                            content.</p>
+                                        <p class="card-text">Aquí encontraras la planificacion de tu curso</p>
                                         <a href="#" class="btn btn-primary">Go somewhere</a>
                                     </div>
                                 </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Company;
+use App\Models\MatriculationSwitchView;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -34,7 +35,9 @@ class CourseController extends Controller
         $user=Auth::user();
         $courses = Course::all();
 
-        return view('vendor.voyager.courses.browse', ['courses' => $courses, 'user'=>$user]);
+        $switchs = MatriculationSwitchView::all();
+        //dd($switchs);
+        return view('vendor.voyager.courses.browse', ['courses' => $courses, 'user'=>$user,'switchs'=>$switchs]);
     }
 
 
