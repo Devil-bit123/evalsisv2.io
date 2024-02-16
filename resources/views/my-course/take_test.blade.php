@@ -1,3 +1,5 @@
+//sin logica de recargas
+
 @extends('voyager::master')
 
 @section('content')
@@ -34,12 +36,14 @@
 
 
         <!-- Utiliza startTimerWithConfirmation en lugar de startTimer directamente -->
-        <button type="button" class="btn btn-success" id="startBtn">Empezar</button>
+        <button type="button" class="btn btn-success" id="startBtn"
+            onclick="startTimerWithConfirmation()">Empezar</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
+
         var test_conf = {{ $test_configuration->id }};
         // Obtén las preguntas desde la variable de PHP y conviértelas a formato JavaScript
         var randomQuestions = @json($random_questions);
@@ -162,16 +166,12 @@
             }
         }
 
-        // Función para mostrar los resultados
-        function showResults() {
-            // Puedes mostrar los resultados de alguna manera, por ejemplo, imprimir en la consola
-            //console.log(userResponses);
-
-            // También puedes enviar los resultados al servidor o realizar otras acciones necesarias
-        }
 
         // Función para iniciar el temporizador
         function startTimer() {
+
+
+
             // Mostrar el tiempo restante
             document.getElementById("timerDisplay").style.display = "block";
             document.getElementById("startBtn").style.display = "none";
@@ -193,7 +193,7 @@
                 // Detener el temporizador cuando el tiempo llega a cero
                 if (timeRemaining < 0) {
                     clearInterval(timerInterval);
-                    alert("¡Tiempo agotado!");
+
                     completeUnansweredQuestions();
 
                     // Mostrar los resultados
@@ -209,10 +209,16 @@
                             //console.log(response.data);
 
                             // Mostrar mensaje de éxito
-                            $('#successMessage').text(response.success).show();
+                            $('#successMessage').text('¡El Tiempo se agoto! tus respuestas seran enviadas para su calificación').show();
                             // Limpiar mensaje de error si lo hubiera
                             $('#errorMessage').text('');
                             //console.log(response);
+                            setTimeout(function() {
+                            // Redirigir después de 1 segundo
+
+                            window.location.href = "{{ route('voyager.my-courses-view.index') }}";
+
+                        }, 2500);
 
                         })
                         .catch(function(error) {
@@ -240,74 +246,9 @@
                 userResponses.push(userResponse);
             }
         }
-
-        // Función para obtener el estado almacenado en el navegador
-        function getStoredState() {
-            var storedState = localStorage.getItem('examState');
-            if (storedState) {
-                return JSON.parse(storedState);
-            } else {
-                return null;
-            }
-        }
-
-        // Función para guardar el estado en el navegador
-        function saveStateToStorage() {
-            var state = {
-                currentQuestionIndex: currentQuestionIndex,
-                userResponses: userResponses,
-                timeRemaining: timeRemaining
-            };
-            localStorage.setItem('examState', JSON.stringify(state));
-        }
-
-        // Función para iniciar el temporizador y cargar el estado previo
-        function startTimer() {
-            var storedState = getStoredState();
-            if (storedState) {
-                currentQuestionIndex = storedState.currentQuestionIndex;
-                userResponses = storedState.userResponses;
-                timeRemaining = storedState.timeRemaining;
-            } else {
-                // Si no hay estado almacenado, iniciar desde cero
-                currentQuestionIndex = 0;
-                userResponses = [];
-                timeRemaining = totalMinutes * 60;
-            }
-
-            // Restaurar el estado de la pregunta actual
-            showCurrentQuestion();
-
-            // Mostrar el tiempo restante
-            document.getElementById("timerDisplay").style.display = "block";
-            document.getElementById("startBtn").style.display = "none";
-
-            // Iniciar el temporizador
-            var timerInterval = setInterval(function() {
-                // Actualizar el tiempo restante y guardarlo en el almacenamiento local
-                timeRemaining--;
-                saveStateToStorage();
-
-                // Mostrar el tiempo restante en la interfaz
-                var minutes = Math.floor(timeRemaining / 60);
-                var seconds = timeRemaining % 60;
-                document.getElementById("minutes").textContent = minutes < 10 ? "0" + minutes : minutes;
-                document.getElementById("seconds").textContent = seconds < 10 ? "0" + seconds : seconds;
-
-                // Detener el temporizador cuando el tiempo llega a cero
-                if (timeRemaining <= 0) {
-                    clearInterval(timerInterval);
-                    alert("¡Tiempo agotado!");
-                    completeUnansweredQuestions();
-                    showResults();
-                }
-            }, 1000);
-        }
-
-        // Llamada a la función startTimerWithConfirmation() al hacer clic en el botón de inicio
-        document.getElementById("startBtn").addEventListener("click", function() {
-            startTimerWithConfirmation();
-        });
-
     </script>
 @endsection
+
+@push('javascript')
+    <!-- Puedes seguir utilizando otros scripts en esta sección si es necesario -->
+@endpush
