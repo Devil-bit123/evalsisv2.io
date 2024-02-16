@@ -1,3 +1,5 @@
+//sin logica de recargas
+
 @extends('voyager::master')
 
 @section('content')
@@ -41,6 +43,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
+
         var test_conf = {{ $test_configuration->id }};
         // Obtén las preguntas desde la variable de PHP y conviértelas a formato JavaScript
         var randomQuestions = @json($random_questions);
@@ -163,16 +166,12 @@
             }
         }
 
-        // Función para mostrar los resultados
-        function showResults() {
-            // Puedes mostrar los resultados de alguna manera, por ejemplo, imprimir en la consola
-            //console.log(userResponses);
-
-            // También puedes enviar los resultados al servidor o realizar otras acciones necesarias
-        }
 
         // Función para iniciar el temporizador
         function startTimer() {
+
+
+
             // Mostrar el tiempo restante
             document.getElementById("timerDisplay").style.display = "block";
             document.getElementById("startBtn").style.display = "none";
@@ -194,7 +193,7 @@
                 // Detener el temporizador cuando el tiempo llega a cero
                 if (timeRemaining < 0) {
                     clearInterval(timerInterval);
-                    alert("¡Tiempo agotado!");
+
                     completeUnansweredQuestions();
 
                     // Mostrar los resultados
@@ -210,10 +209,16 @@
                             //console.log(response.data);
 
                             // Mostrar mensaje de éxito
-                            $('#successMessage').text(response.success).show();
+                            $('#successMessage').text('¡El Tiempo se agoto! tus respuestas seran enviadas para su calificación').show();
                             // Limpiar mensaje de error si lo hubiera
                             $('#errorMessage').text('');
                             //console.log(response);
+                            setTimeout(function() {
+                            // Redirigir después de 1 segundo
+
+                            window.location.href = "{{ route('voyager.my-courses-view.index') }}";
+
+                        }, 2500);
 
                         })
                         .catch(function(error) {
