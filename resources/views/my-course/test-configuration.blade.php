@@ -59,10 +59,13 @@
                 </div>
 
                 <div class="input-group mb-3">
-                    <label for="formGroupExampleInput" class="form-label">Selecciona la cantidad de tiempo que desas que dure tu
-                        test</label>
-                    <input type="time" id="InputDuration" class="form-control" placeholder="Username" aria-label="Username"
-                        aria-describedby="basic-addon1">
+                    <label for="formGroupExampleInput" class="form-label" data-toggle="tooltip" title="IMPORTANTE: Ingrese la cantidad de de horas y minutos que desea que dure su test 01:20 representan 1 Hora con 20 minutos. El test estara disponible todo el dia">Selecciona la cantidad de tiempo que desas que dure tu test</label>
+
+
+
+
+                    <input type="time" class="form-control" id="InputDuration" placeholder="Username" aria-label="Username"
+                        aria-describedby="basic-addon1" step="1800" />
                 </div>
 
             </div>
@@ -74,7 +77,15 @@
 
 
 
+<script src="{{ asset('js/app.js') }}" defer></script>
+
     <script>
+
+
+$(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
         $(document).ready(function() {
 
             // Función para obtener la fecha actual en formato YYYY-MM-DD
@@ -146,6 +157,7 @@
 
             // Agregar evento de clic al botón "Guardar"
             $('.btn-success').on('click', function() {
+
                 // Obtener los valores de los campos de entrada
                 const testName = $('#InputName').val();
                 const examId = $('#examDropdown').val();
@@ -154,14 +166,44 @@
                 const testDuration = $('#InputDuration').val();
 
 
-
-
                 // Validar que todos los campos requeridos estén llenos
                 if (!testName || !examId || !selectedDate || !
                     questionAmount || !testDuration) {
                     alert('Por favor, complete todos los campos antes de guardar.');
                     return;
                 }
+
+                // Obtener el valor del input
+                var unformated_duration = $('#InputDuration').val();
+
+                // Expresión regular para verificar si el formato es de 12 horas (con am/pm)
+                var regex12HourFormat = /^(0?[1-9]|1[0-2]):[0-5][0-9] (am|pm)$/i;
+
+                // Expresión regular para verificar si el formato es de 24 horas
+                var regex24HourFormat = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+
+                if (regex12HourFormat.test(unformated_duration)) {
+                    // Si está en formato de 12 horas, convertir a formato de 24 horas
+                    var hour = parseInt(unformated_duration.split(':')[0]);
+                    var minutes = unformated_duration.split(':')[1].split(' ')[0];
+                    var period = unformated_duration.split(' ')[1];
+
+                    if (period.toLowerCase() === 'pm' && hour !== 12) {
+                        hour += 12;
+                    } else if (period.toLowerCase() === 'am' && hour === 12) {
+                        hour = 0;
+                    }
+
+                    // Formatear la hora a 24 horas
+                    var hour24Format = ("0" + hour).slice(-2) + ":" + minutes;
+
+                    console.log("Hora en formato de 24 horas:", hour24Format);
+                } else if (regex24HourFormat.test(unformated_duration)) {
+                    //console.log("La hora ya está en formato de 24 horas.");
+                } else {
+                    //console.log("El formato de hora no es reconocido.",unformated_duration);
+                }
+
 
                 // Realizar la solicitud AJAX
                 $.ajax({
@@ -172,7 +214,7 @@
                         examId: examId,
                         selectedDate: selectedDate,
                         questionAmount: questionAmount,
-                        testDuration: testDuration
+                        testDuration: unformated_duration ?? hour24Format
                     },
                     success: function(response) {
                         // Mostrar mensaje de éxito
@@ -200,6 +242,9 @@
 
                     }
                 });
+
+
+
             });
 
         });
