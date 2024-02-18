@@ -27,10 +27,18 @@
 
 
                         <div class="input-group mb-3">
-                            <label for="formGroupExampleInput" class="form-label">Ingresa el nombre de tu test</label>
-                            <input type="text" id="InputName" class="form-control" aria-label="Username"
-                                aria-describedby="basic-addon1">
+                            <label for="planificationSelector" class="form-label">Selecciona una planificación de test:</label>
+                            <select id="InputName" class="form-select">
+                                <option value="">Selecciona una planificación...</option>
+                                @foreach ($planifications as $planification)
+                                    <option value="{{ $planification->name }}">{{ $planification->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
+
+
+
+
 
 
                         <label for="formGroupExampleInput" class="form-label">Selecciona tu banco de preguntas</label>
@@ -59,7 +67,9 @@
                 </div>
 
                 <div class="input-group mb-3">
-                    <label for="formGroupExampleInput" class="form-label" data-toggle="tooltip" title="IMPORTANTE: Ingrese la cantidad de de horas y minutos que desea que dure su test 01:20 representan 1 Hora con 20 minutos. El test estara disponible todo el dia">Selecciona la cantidad de tiempo que desas que dure tu test</label>
+                    <label for="formGroupExampleInput" class="form-label" data-toggle="tooltip"
+                        title="IMPORTANTE: Ingrese la cantidad de de horas y minutos que desea que dure su test 01:20 representan 1 Hora con 20 minutos. El test estara disponible todo el dia; En caso de aparecer am/pm se utilizara la misma logica de duración">Selecciona
+                        la cantidad de tiempo que desas que dure tu test</label>
 
 
 
@@ -77,14 +87,12 @@
 
 
 
-<script src="{{ asset('js/app.js') }}" defer></script>
+
 
     <script>
-
-
-$(function () {
-        $('[data-toggle="tooltip"]').tooltip();
-    });
+        $(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
 
         $(document).ready(function() {
 
@@ -170,6 +178,7 @@ $(function () {
                 if (!testName || !examId || !selectedDate || !
                     questionAmount || !testDuration) {
                     alert('Por favor, complete todos los campos antes de guardar.');
+                    console.log('Campos', testName, examId, selectedDate, questionAmount, testDuration);
                     return;
                 }
 
@@ -232,15 +241,21 @@ $(function () {
                     },
                     error: function(error) {
                         // Manejar errores si es necesario
-                        // console.error(error);
                         // alert('Hubo un error al guardar los datos.');
-                        $('#errorMessage').text(error).show();
+                        if (error.responseJSON && error.responseJSON.message.includes(
+                                "Connection could not be established with host")) {
+                            $('#errorMessage').text(
+                                'Los correos lectronicos no se pudieron enviar a los alumnos, pero la configuración se guardó correctamente.'
+                                ).show();
+                        } else {
+                            $('#errorMessage').text('Hubo un error al guardar los datos.')
+                            .show();
+                        }
                         // Limpiar mensaje de éxito si lo hubiera
                         $('#successMessage').text('');
                         //console.error(error);
-
-
                     }
+
                 });
 
 
