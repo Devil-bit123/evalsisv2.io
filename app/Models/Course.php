@@ -39,4 +39,12 @@ class Course extends Model
             ->withPivot('role')
             ->withTimestamps();
     }
+
+
+    // Relación uno a muchos con las planificaciones
+    public function planifications()
+    {
+        return $this->hasMany(Planification::class, 'course_id');
+    }
+
 }
