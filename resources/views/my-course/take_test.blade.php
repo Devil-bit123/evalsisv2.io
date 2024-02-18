@@ -118,7 +118,7 @@
                 showCurrentQuestion();
             } else {
                 // Todas las preguntas han sido respondidas, muestra los resultados
-                showResults();
+                //showResults();
                 axios.post('/admin/submit-test/', {
                         userResponses: userResponses,
                         complete_status: 'complete',
@@ -197,7 +197,7 @@
                     completeUnansweredQuestions();
 
                     // Mostrar los resultados
-                    showResults();
+                    //showResults();
 
                     axios.post('/admin/submit-test/', {
                             userResponses: userResponses,

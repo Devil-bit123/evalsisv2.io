@@ -7,6 +7,7 @@ use App\Models\Test;
 use App\Models\Course;
 use App\Helpers\TestHelper;
 use Illuminate\Http\Request;
+use App\Models\Planification;
 use Illuminate\Validation\Rule;
 use App\Models\TestConfiguration;
 use Illuminate\Support\Facades\Auth;
@@ -32,11 +33,29 @@ class MyCourseViewController extends Controller
     }
 
     public function test_configuration($id)
-    {
+{
+    // Obtener todos los exámenes asociados al curso
+    $exams = Exam::where('id_course', $id)->get();
 
-        $exams = Exam::where('id_course', '=', $id)->get();
-        return view('my-course.test-configuration', compact('exams'));
+    // Obtener los nombres de las configuraciones de test asociadas a los exámenes
+    $usedConfigurationNames = [];
+    foreach ($exams as $exam) {
+        $usedConfigurationNames = array_merge($usedConfigurationNames, $exam->testConfigurations->pluck('name')->toArray());
     }
+
+    // Obtener las planificaciones de tipo test asociadas al curso
+    $planifications = Planification::where('course_id', $id)
+        ->where('type', 'test')
+        ->whereNotIn('name', $usedConfigurationNames)
+        ->get();
+
+    return view('my-course.test-configuration', compact('exams','planifications'));
+}
+
+
+
+
+
 
     public function test_configuration_save(Request $request)
     {

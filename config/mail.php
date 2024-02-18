@@ -36,11 +36,11 @@ return [
     'mailers' => [
         'smtp' => [
             'transport' => 'smtp',
-            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+            'host' => env('MAIL_HOST', 'smtp-relay.brevo.com'),
             'port' => env('MAIL_PORT', 587),
             'encryption' => env('MAIL_ENCRYPTION', 'tls'),
-            'username' => env('MAIL_USERNAME'),
-            'password' => env('MAIL_PASSWORD'),
+            'username' => env('MAIL_USERNAME','miguel000127@gmail.com'),
+            'password' => env('MAIL_PASSWORD','xsmtpsib-c5b729df6d0ed7cec795455b6ce770f11a50073bc1f5807ddeb503f475f033f0-fjV7C6gWN48LES92'),
             'timeout' => null,
             'auth_mode' => null,
         ],
