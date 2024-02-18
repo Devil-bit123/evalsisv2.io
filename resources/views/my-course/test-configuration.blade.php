@@ -27,9 +27,9 @@
 
 
                         <div class="input-group mb-3">
-                            <label for="planificationSelector" class="form-label">Selecciona una planificación de test:</label>
+                            <label for="planificationSelector" class="form-label">Selecciona la planificación de test:</label>
                             <select id="InputName" class="form-select">
-                                <option value="">Selecciona una planificación...</option>
+                                <option value="">Selecciona un test de su planificación...</option>
                                 @foreach ($planifications as $planification)
                                     <option value="{{ $planification->name }}">{{ $planification->name }}</option>
                                 @endforeach
@@ -178,7 +178,13 @@
                 if (!testName || !examId || !selectedDate || !
                     questionAmount || !testDuration) {
                     alert('Por favor, complete todos los campos antes de guardar.');
-                    console.log('Campos', testName, examId, selectedDate, questionAmount, testDuration);
+                    //console.log('Campos', testName, examId, selectedDate, questionAmount, testDuration);
+                    return;
+                }
+
+                // Validar que todos los campos requeridos estén llenos
+                if (testName === 'Selecciona un test de su planificación...') {
+                    alert('Por favor, Selecciona un test de tu planificación o crea un test nuevo en planificación.');
                     return;
                 }
 
@@ -253,7 +259,12 @@
                         }
                         // Limpiar mensaje de éxito si lo hubiera
                         $('#successMessage').text('');
-                        //console.error(error);
+                        console.error(error);
+                        setTimeout(function() {
+                            // Redirigir después de 1 segundo
+                            window.location.href =
+                                '{{ route('my-course.dashboard', ['id' => $exam->id_course]) }}';
+                        }, 2500);
                     }
 
                 });
