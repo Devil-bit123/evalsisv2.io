@@ -43,7 +43,7 @@
                 @endforeach
             </ul>
             <p>Respuesta del usuario: {{ $response['user_answer_text'] }}</p>
-            <p>Respuesta correcta: {{ $response['correct_asnwer_text'] }}</p>
+            <p>Respuesta correcta: {{ $response['correct_answer_text'] }}</p>
         @endforeach
 
         <!-- Agrega el botón para regresar -->

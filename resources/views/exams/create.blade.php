@@ -144,8 +144,8 @@
                 return {
                     title,
                     responses,
-                    correct_asnwer_index: correctResponseIndex,
-                    correct_asnwer_text: correctResponseText
+                    correct_answer_index: correctResponseIndex,
+                    correct_answer_text: correctResponseText
                 };
             });
 
