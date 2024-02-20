@@ -43,7 +43,7 @@ class MyCourseViewController extends Controller
         $usedConfigurationNames = array_merge($usedConfigurationNames, $exam->testConfigurations->pluck('name')->toArray());
     }
 
-    // Obtener las planificaciones de tipo test asociadas al curso
+    // Obtener las planificaciones de tipo test asociadas al curso y que no han sido usadas
     $planifications = Planification::where('course_id', $id)
         ->where('type', 'test')
         ->whereNotIn('name', $usedConfigurationNames)

@@ -5,8 +5,9 @@ use App\Http\Controllers\ExamController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseUserController;
-use App\Http\Controllers\MyCourseViewController;
 use App\Http\Controllers\UserCompanyController;
+use App\Http\Controllers\MyCourseViewController;
+use App\Http\Controllers\MyPlanificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,6 +93,11 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/take-my-tests/{id}', [MyCourseViewController::class, 'take_test'])->name('my-course.take_test');
     Route::post('/submit-test/', [MyCourseViewController::class, 'submitTest'])->name('submit_test');
     Route::get('/my-score/{id}', [MyCourseViewController::class, 'my_score'])->name('my-course.my_score');
+
+    //Myplanifications
+    Route::get('/my-planification/{course}',[MyPlanificationController::class, 'find'])->name('my-planification');
+    Route::post('/my-planification/',[MyPlanificationController::class, 'save'])->name('my-planification-save');
+    Route::get('/my-planifications/', [MyPlanificationController::class, 'index'])->name('my-planifications');
 
 
 });
