@@ -14,7 +14,13 @@ class MyPlanificationController extends Controller
     {
         $user = Auth::user();
 
-        $courses = $user->courses;
+        if($user->role->name === 'admin'){
+            $courses = Course::all();
+        }else{
+            $courses = $user->courses;
+        }
+
+
 
         //dd($courses);
         return view('vendor.voyager.planifications.my-planifications', compact('courses'));
