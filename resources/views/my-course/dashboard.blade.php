@@ -10,6 +10,20 @@
             @endif
 
             <div class="row">
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Crear Planificación</h5>
+                            <p class="card-text">Carga archivos para que tus estudiantes puedan desarollar actividades</p>
+                            <a href="{{ route('my-planification', ['course' => $course->id]) }}" class="btn btn-primary">Ver Planificación</a>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-header">
@@ -32,18 +46,7 @@
                 </div>
 
                 <!-- Agrega más tarjetas siguiendo el mismo formato -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header">
 
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Crear Planificación</h5>
-                            <p class="card-text">Carga archivos para que tus estudiantes puedan desarollar actividades</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="col-md-4">
                     <div class="card">
@@ -113,7 +116,7 @@
                                     <div class="card-body">
                                         <h5 class="card-title">Planificacion del curso</h5>
                                         <p class="card-text">Aquí encontraras la planificacion de tu curso</p>
-                                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                                        <a href="{{ route('my-planification', ['course' => $course->id]) }}" class="btn btn-primary">Ver Planificación</a>
                                     </div>
                                 </div>
                             </div>
