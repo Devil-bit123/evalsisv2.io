@@ -241,6 +241,7 @@ class MyCourseViewController extends Controller
     {
         $user = Auth::user();
         $user_answers = $request->input('userResponses');
+        //dd($user_answers);
         $score = TestHelper::get_my_score($user_answers);
 
         $test = new Test([
