@@ -128,7 +128,7 @@
             });
 
             $('#examDropdown').on('change', function() {
-                const questionCount = $(this).find('option:selected').data('question-count');
+                const questionCount = $(this).find('option:selected').data('question-count')+1;
                 $('#questionCountPlaceholder').text(questionCount);
 
                 // Obtener el ID del banco de preguntas en lugar del nombre

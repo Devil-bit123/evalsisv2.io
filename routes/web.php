@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\MyEventsController;
 use App\Http\Controllers\CourseUserController;
 use App\Http\Controllers\UserCompanyController;
 use App\Http\Controllers\MyCourseViewController;
@@ -99,6 +100,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('/my-planification/',[MyPlanificationController::class, 'save'])->name('my-planification-save');
     Route::get('/my-planifications/', [MyPlanificationController::class, 'index'])->name('my-planifications');
 
+    //Events
+    Route::get('/my-events',[MyEventsController::class, 'index'])->name('my-events');
 
 });
 

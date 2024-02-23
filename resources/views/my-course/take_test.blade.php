@@ -101,8 +101,8 @@
                 var userResponse = {
                     title: currentQuestion.title,
                     responses: currentQuestion.responses,
-                    correct_asnwer_text: currentQuestion.correct_asnwer_text,
-                    correct_asnwer_index: parseInt(currentQuestion.correct_asnwer_index),
+                    correct_answer_text: currentQuestion.correct_answer_text,
+                    correct_answer_index: parseInt(currentQuestion.correct_answer_index),
                     user_answer_text: currentQuestion.responses[selectedOption.value],
                     user_anwser_index: parseInt(selectedOption.value),
 

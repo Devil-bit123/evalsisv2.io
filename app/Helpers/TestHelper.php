@@ -39,8 +39,8 @@ class TestHelper
 
         foreach ($responses as $response) {
             if (
-                $response['correct_asnwer_text'] === $response['user_answer_text'] &&
-                $response['correct_asnwer_index'] === $response['user_anwser_index']
+                $response['correct_answer_text'] === $response['user_answer_text'] &&
+                $response['correct_answer_index'] === $response['user_answer_index']
             ) {
                 $correctAnswersCount++;
             }
