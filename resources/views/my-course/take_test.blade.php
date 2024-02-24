@@ -104,7 +104,7 @@
                     correct_answer_text: currentQuestion.correct_answer_text,
                     correct_answer_index: parseInt(currentQuestion.correct_answer_index),
                     user_answer_text: currentQuestion.responses[selectedOption.value],
-                    user_anwser_index: parseInt(selectedOption.value),
+                    user_answer_index: parseInt(selectedOption.value),
 
                 };
                 userResponses.push(userResponse);

@@ -35,11 +35,11 @@
                 </div>
 
                 <button type="button" id="crearUsuarioBtn" class="btn btn-primary">
-                    Crear Usuario
+                    Agregar a compania
                 </button>
 
                 <button type="button" id="eliminarUsuarioBtn" class="btn btn-danger">
-                    Eliminar Usuario de la Compañía
+                    Eliminar de la Compañía
                 </button>
 
 
