@@ -24,9 +24,9 @@ Install EvalSis with git clone
 
 MAIL_DRIVER=smtp
 
-MAIL_HOST=smtp-relay.brevo.com
+MAIL_HOST=
 
-MAIL_PORT=587
+MAIL_PORT=
 
 MAIL_USERNAME=
 
