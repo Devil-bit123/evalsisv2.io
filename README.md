@@ -20,7 +20,7 @@ Install EvalSis with git clone
 > [!IMPORTANT]
 > Made to be used Brevo, if you plan to use with another provider, you must adjust the email configuration file and the email sending listener
 
-#Mails Configuration
+## Mails Configuration
 
 MAIL_DRIVER=smtp
 
