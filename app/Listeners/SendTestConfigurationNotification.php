@@ -44,13 +44,13 @@ class SendTestConfigurationNotification implements ShouldQueue
         try {
             $response = $client->post('https://api.sendinblue.com/v3/smtp/email', [
                 'json' => [
-                    'sender' => ['name' => 'EvalSis', 'email' => 'notifications@evalsis.com'],
+                    'sender' => ['name' => env('APP_NAME'), 'email' =>  env('NOTIFICATION_CHANNEL')],
                     'to' => [['email' => $to]],
                     'subject' => 'Notificación de Nuevos Examenes',
                     'htmlContent' => view('emails.test_configuration_created', compact('testConfiguration', 'course'))->render()
                 ],
                 'headers' => [
-                    'api-key' => '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',
+                    'api-key' => env('V3_API_KEY '),
                     'Content-Type' => 'application/json'
                 ]
             ]);
