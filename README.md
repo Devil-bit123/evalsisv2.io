@@ -1,7 +1,7 @@
 
 # EvalSis
 
-A simple but powerful evaluation system coded in PHP
+A simple but powerful evaluation system coded in PHP, for a school project
 
 
 ## Installation
@@ -42,12 +42,16 @@ V3_API_KEY =
 
 ## Features
 
-- roles and permissions
-- teacher registration
-- student enrollment
-- course planning
-- classroom view
-- quiz
+- Roles and permissions
+- Teacher registration
+- Student enrollment
+- Course planning
+- Classroom view
+- Question Banks
+- Tests
+- New Test notifications!
+- Tests calendar
+- Autoscore
 
 
 ## Screenshots
