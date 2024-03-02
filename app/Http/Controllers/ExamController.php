@@ -39,8 +39,8 @@ class ExamController extends Controller
                 'questions.*.title' => 'required|string|max:255',
                 'questions.*.responses' => 'required|array|min:2',
                 'questions.*.responses.*' => 'required|string|max:255',
-                'questions.*.correct_asnwer_index' => 'required|int|min:0',
-                'questions.*.correct_asnwer_text' => 'required|string',
+                'questions.*.correct_answer_index' => 'required|int|min:0',
+                'questions.*.correct_answer_text' => 'required|string',
             ]);
 
             $exam = Exam::create([
@@ -88,8 +88,8 @@ class ExamController extends Controller
             'questions.*.title' => 'required|string|max:255',
             'questions.*.responses' => 'required|array|min:2',
             'questions.*.responses.*' => 'required|string|max:255',
-            'questions.*.correct_asnwer_index' => 'required|int',
-            'questions.*.correct_asnwer_text' => 'required|string',
+            'questions.*.correct_answer_index' => 'required|int',
+            'questions.*.correct_answer_text' => 'required|string',
         ]);
 
         $exam = Exam::findOrFail($examId);
