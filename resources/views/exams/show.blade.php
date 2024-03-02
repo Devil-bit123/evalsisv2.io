@@ -62,8 +62,8 @@
                                 @endforeach
                             </ul>
 
-                            @if (array_key_exists('correct_asnwer_index', $question))
-                                <strong><p>Respuesta Correcta: {{ $question['correct_asnwer_text'] }}</p></strong>
+                            @if (array_key_exists('correct_answer_index', $question))
+                                <strong><p>Respuesta Correcta: {{ $question['correct_answer_text'] }}</p></strong>
                             @else
                                 <p>Respuesta Correcta no especificada</p>
                             @endif
