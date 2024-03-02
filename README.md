@@ -13,6 +13,8 @@ Install EvalSis with git clone
   cd my-project
   composer install
   php artisan migrate
+  restore DB in storage\DB (optional)
+  Create BREADS
 ```
 
     
